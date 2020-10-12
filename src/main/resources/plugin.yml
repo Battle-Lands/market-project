@@ -1,0 +1,5 @@
+main: com.github.battle.market.MarketPlugin
+name: BattleShopPlugin
+author: zkingboos_
+version: 1.0.0
+softdepends: [ Vault, ChestShop ]
