@@ -1,8 +1,8 @@
 package com.github.battle.market.command;
 
 import com.github.battle.market.entity.PlayerShopEntity;
-import com.github.battle.market.entity.PlayerShopManager;
-import com.github.battle.market.view.ShopPaginatedView;
+import com.github.battle.market.manager.PlayerShopManager;
+import com.github.battle.market.view.ShopView;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public final class ShopCommand {
 
     private final PlayerShopManager playerShopManager;
-    private final ShopPaginatedView shopPaginatedView;
+    private final ShopView shopPaginatedView;
 
     @Command(
       name = "shop",
@@ -22,8 +22,11 @@ public final class ShopCommand {
       aliases = "loja"
     )
     public void shopViewCommand(Context<Player> playerContext, @Optional Player seller) {
-        shopPaginatedView.showInventory(playerContext.getSender());
-    }
+        if(seller == null) {
+            shopPaginatedView.showInventory(playerContext.getSender());
+            return;
+        }
+     }
 
     @Command(
       name = "shop.set",
@@ -31,7 +34,7 @@ public final class ShopCommand {
     )
     public void setShopCommand(Context<Player> playerContext, @Optional String[] args) {
         final Player sender = playerContext.getSender();
-        final PlayerShopEntity shopEntity = playerShopManager.getOrCreatePlayerShop(sender);
+        final PlayerShopEntity shopEntity = playerShopManager.getPlayerShop(sender);
         shopEntity.setLocation(sender.getLocation());
 
         if (args != null) {
@@ -39,7 +42,7 @@ public final class ShopCommand {
             shopEntity.setDescription(description);
         }
 
-        sender.sendMessage("Sua loja foi setada na localização babababa");
+        playerContext.sendMessage("Sua loja foi setada na localização babababa");
     }
 }
 
