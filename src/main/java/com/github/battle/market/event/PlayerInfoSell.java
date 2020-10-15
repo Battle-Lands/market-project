@@ -3,7 +3,6 @@ package com.github.battle.market.event;
 import com.Acrobot.ChestShop.Events.TransactionEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class PlayerInfoSell implements Listener {
 

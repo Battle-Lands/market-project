@@ -1,9 +1,9 @@
 package com.github.battle.market.manager;
 
 import com.github.battle.core.database.requester.MySQLRequester;
-import com.github.battle.market.adapter.PlayerShopEntityAdapter;
 import com.github.battle.market.bootstrap.MysqlBootstrap;
 import com.github.battle.market.entity.PlayerShopEntity;
+import com.github.battle.market.serializator.PlayerShopEntityAdapter;
 import com.google.common.cache.CacheLoader;
 import lombok.RequiredArgsConstructor;
 

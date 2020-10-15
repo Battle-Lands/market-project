@@ -1,6 +1,8 @@
 package com.github.battle.market.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 import org.bukkit.Location;
 
 import java.sql.Timestamp;

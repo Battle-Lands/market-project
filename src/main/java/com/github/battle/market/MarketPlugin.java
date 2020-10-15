@@ -2,12 +2,11 @@ package com.github.battle.market;
 
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.core.plugin.PluginCore;
-import com.github.battle.market.adapter.PlayerShopEntityAdapter;
 import com.github.battle.market.bootstrap.MysqlBootstrap;
 import com.github.battle.market.command.ShopCommand;
-import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.event.PlayerInfoSell;
-import com.github.battle.market.adapter.PlayerShopItemAdapter;
+import com.github.battle.market.manager.PlayerShopManager;
+import com.github.battle.market.serializator.PlayerShopItemAdapter;
 import com.github.battle.market.view.ShopView;
 import lombok.Getter;
 
@@ -29,9 +28,7 @@ public final class MarketPlugin extends PluginCore {
           mySQLRequester
         ).createInitialTables();
 
-        final PlayerShopEntityAdapter playerShopEntityAdapter = new PlayerShopEntityAdapter();
         final PlayerShopManager playerShopManager = new PlayerShopManager(
-          playerShopEntityAdapter,
           mySQLRequester,
           mysqlBootstrap
         );

@@ -1,9 +1,8 @@
-package com.github.battle.market.adapter;
+package com.github.battle.market.serializator;
 
-import com.github.battle.core.common.ModelAdapter;
+import com.github.battle.core.serialization.ModelAdapter;
 import com.github.battle.core.serialization.location.LocationText;
 import com.github.battle.market.entity.PlayerShopEntity;
-import lombok.NonNull;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +14,21 @@ public final class PlayerShopEntityAdapter implements ModelAdapter<Optional<Play
 
     @Override
     public Optional<PlayerShopEntity> adaptModel(@Nullable ResultSet set) throws SQLException {
-        if(set == null) return Optional.empty();
+        if (set == null) return Optional.empty();
 
-        //final Location deserializeLocation = LocationText.deserializeLocation(set.getString("location"));
-
+        final String rawLocation = set.getString("location");
         return PlayerShopEntity.builder()
           .id(set.getInt("id"))
-          .owner(set.getString("owner"))
+          .owner(set.getString("owner").toLowerCase())
+          .location(adaptLocation(rawLocation))
           .description(set.getString("description"))
           .createdAt(set.getTimestamp("created_at"))
-          //.location(deserializeLocation)
           .build()
           .optional();
+    }
+
+    public Location adaptLocation(@Nullable String rawLocation) {
+        if (rawLocation == null) return null;
+        return LocationText.deserializeLocation(rawLocation);
     }
 }

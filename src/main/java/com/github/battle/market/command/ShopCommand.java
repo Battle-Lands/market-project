@@ -1,5 +1,6 @@
 package com.github.battle.market.command;
 
+import com.github.battle.core.serialization.location.LocationText;
 import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.view.ShopView;
@@ -8,8 +9,11 @@ import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
 import me.saiintbrisson.minecraft.command.command.Context;
 import me.saiintbrisson.minecraft.command.target.CommandTarget;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("all")
 @RequiredArgsConstructor
 public final class ShopCommand {
 
@@ -21,12 +25,20 @@ public final class ShopCommand {
       target = CommandTarget.PLAYER,
       aliases = "loja"
     )
-    public void shopViewCommand(Context<Player> playerContext, @Optional Player seller) {
-        if(seller == null) {
+    public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer seller) {
+        if (seller == null) {
             shopPaginatedView.showInventory(playerContext.getSender());
             return;
         }
-     }
+
+        final PlayerShopEntity playerShop = playerShopManager.getPlayerShop(seller);
+        if (playerShop == null) {
+            playerContext.sendMessage("§cThat player don't have any shop set");
+            return;
+        }
+
+        playerContext.sendMessage("shop information %s", playerShop);
+    }
 
     @Command(
       name = "shop.set",
@@ -34,15 +46,18 @@ public final class ShopCommand {
     )
     public void setShopCommand(Context<Player> playerContext, @Optional String[] args) {
         final Player sender = playerContext.getSender();
+        final Location location = sender.getLocation();
+
         final PlayerShopEntity shopEntity = playerShopManager.getPlayerShop(sender);
-        shopEntity.setLocation(sender.getLocation());
+        shopEntity.setLocation(location);
 
         if (args != null) {
             final String description = String.join(" ", args);
             shopEntity.setDescription(description);
         }
 
-        playerContext.sendMessage("Sua loja foi setada na localização babababa");
+        playerContext.sendMessage("§aYour shop has been created at %s.", LocationText.serializeLocation(location));
+        playerShopManager.refleshPlayerShop(sender);
     }
 }
 

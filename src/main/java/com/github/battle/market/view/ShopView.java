@@ -1,6 +1,6 @@
 package com.github.battle.market.view;
 
-import com.github.battle.market.adapter.PlayerShopItemAdapter;
+import com.github.battle.market.serializator.PlayerShopItemAdapter;
 import me.saiintbrisson.minecraft.paginator.PaginatedView;
 import org.bukkit.plugin.Plugin;
 
@@ -16,9 +16,6 @@ public final class ShopView extends PaginatedView<PlayerShopItem> {
           }, () -> playerShopItemAdapter.adaptModel(null)
         );
 
-        setItemProcessor((player, playerShopItem, inventoryClickEvent) -> {
-            playerShopItemAdapter.getPlayerShopManager().refleshPlayerShop(player);
-            inventoryClickEvent.setCancelled(true);
-        });
+        setUpdateAfterClick(true);
     }
 }
