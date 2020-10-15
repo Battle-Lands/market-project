@@ -1,7 +1,7 @@
 package com.github.battle.market.serializator;
 
-import com.github.battle.core.serialization.ModelSerializer;
 import com.github.battle.core.database.requester.MySQLRequester;
+import com.github.battle.core.serialization.ModelSerializer;
 import com.github.battle.core.serialization.location.LocationText;
 import com.github.battle.market.bootstrap.MysqlBootstrap;
 import com.github.battle.market.entity.PlayerShopEntity;

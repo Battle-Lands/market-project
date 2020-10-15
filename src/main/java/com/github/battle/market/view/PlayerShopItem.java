@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.ItemBuilder;
 import me.saiintbrisson.minecraft.paginator.PaginatedItem;
 import me.saiintbrisson.minecraft.paginator.PaginatedViewHolder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,10 +19,8 @@ public final class PlayerShopItem implements PaginatedItem {
     @Override
     public ItemStack toItemStack(Player player, PaginatedViewHolder paginatedViewHolder) {
         final String owner = playerShopEntity.getOwner();
-        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(owner);
-        if (offlinePlayer.isBanned()) return null;
-
         final String description = playerShopEntity.getDescription();
+
         return new ItemBuilder(Material.SKULL_ITEM)
           .lore(
             "§7Visite a loja de " + owner,

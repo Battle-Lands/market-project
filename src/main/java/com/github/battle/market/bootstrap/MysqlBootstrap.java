@@ -50,7 +50,7 @@ public final class MysqlBootstrap {
 
                 final String owner = optional.get().getOwner();
                 final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(owner);
-                if(!offlinePlayer.hasPlayedBefore()) continue;
+                if (!offlinePlayer.hasPlayedBefore()) continue;
 
                 preLoadingCache.put(
                   owner,

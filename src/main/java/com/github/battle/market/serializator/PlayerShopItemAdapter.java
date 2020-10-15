@@ -6,6 +6,8 @@ import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.view.PlayerShopItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,15 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
         playerShopItems.clear();
         for (Optional<PlayerShopEntity> optional : playerShopManager.getAllShopEntities()) {
             if (!optional.isPresent()) continue;
-            playerShopItems.add(new PlayerShopItem(optional.get()));
+
+            // The bellow lines cause a unnecessary cache route, i need to fix this
+            // But i have no idea how can i do this
+            final PlayerShopEntity playerShopEntity = optional.get();
+
+            final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerShopEntity.getOwner());
+            if (offlinePlayer.isBanned()) continue;
+
+            playerShopItems.add(new PlayerShopItem(playerShopEntity));
         }
 
         return playerShopItems;
