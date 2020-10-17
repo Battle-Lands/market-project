@@ -15,28 +15,29 @@ import java.util.concurrent.ForkJoinPool;
 public final class MarketPlugin extends PluginCore {
 
     private MySQLRequester mySQLRequester;
-    private ForkJoinPool forkJoinPool;
+    private MysqlBootstrap mysqlBootstrap;
 
     @Override
     public void onPluginEnable() {
         saveDefaultConfig();
 
-        this.forkJoinPool = new ForkJoinPool(5);
         this.mySQLRequester = new MySQLRequester(
-          getCredentialRegistry().getMysqlCredential()
+          getCredentialRegistry()
+            .getMysqlCredential()
         ).connect();
 
-        final MysqlBootstrap mysqlBootstrap = new MysqlBootstrap(
-          getConfig(),
-          mySQLRequester
-        ).createInitialTables();
+        this.mysqlBootstrap = new MysqlBootstrap(getConfig(), mySQLRequester, new ForkJoinPool(5))
+          .createInitialTables(
+            "shop_information.create_table",
+            "shop_transaction.create_table"
+          );
 
         final PlayerShopManager playerShopManager = new PlayerShopManager(
           mySQLRequester,
           mysqlBootstrap
         );
 
-        executeAsync(playerShopManager.getEntitySync());
+        mysqlBootstrap.executeAsync(playerShopManager.getEntitySync());
 
         final PlayerShopItemAdapter playerShopItemAdapter = new PlayerShopItemAdapter(playerShopManager);
         final ShopView shopPaginatedView = new ShopView(this, playerShopItemAdapter);
@@ -48,13 +49,9 @@ public final class MarketPlugin extends PluginCore {
         ));
     }
 
-    public void executeAsync(Runnable runnable) {
-        forkJoinPool.execute(runnable);
-    }
-
     @Override
     public void onDisable() {
         mySQLRequester.close();
-        forkJoinPool.shutdownNow();
+        mysqlBootstrap.closeForkJoinPool();
     }
 }

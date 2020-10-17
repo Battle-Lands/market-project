@@ -23,4 +23,8 @@ public final class PlayerShopEntity {
     public Optional<PlayerShopEntity> optional() {
         return Optional.of(this);
     }
+
+    public Integer getSqlId() {
+        return id == 0 ? null : id;
+    }
 }

@@ -22,8 +22,8 @@ public final class ShopCommand {
 
     @Command(
       name = "shop",
-      target = CommandTarget.PLAYER,
-      aliases = "loja"
+      aliases = "loja",
+      target = CommandTarget.PLAYER
     )
     public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer seller) {
         if (seller == null) {
@@ -38,6 +38,22 @@ public final class ShopCommand {
         }
 
         playerContext.sendMessage("shop information %s", playerShop);
+    }
+
+    @Command(
+      name = "shop.remove",
+      aliases = {"remover", "delete", "deletar", "rm"}
+    )
+    public void removeShopCommand(Context<Player> playerContext) {
+        final Player sender = playerContext.getSender();
+        final boolean hasPlayerShop = playerShopManager.hasPlayerShop(sender);
+        if (!hasPlayerShop) {
+            playerContext.sendMessage("§cYou don't have any shop set.");
+            return;
+        }
+
+        playerShopManager.invalidPlayerShop(sender);
+        playerContext.sendMessage("§aYou've been deleted your shop.");
     }
 
     @Command(
@@ -58,8 +74,9 @@ public final class ShopCommand {
 
         playerShopManager.refleshPlayerShop(sender);
         playerContext.sendMessage(
-          "§aYour shop has been created at %s.",
-          LocationText.serializeLocation(location)
+          "§aYour shop has been created at %s. §7§o(#%s)",
+          LocationText.serializeLocation(location),
+          shopEntity.getId()
         );
     }
 }

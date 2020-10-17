@@ -23,6 +23,7 @@ public final class PlayerShopItem implements PaginatedItem {
 
         return new ItemBuilder(Material.SKULL_ITEM)
           .lore(
+            "id " + playerShopEntity.getId(),
             "§7Visite a loja de " + owner,
             "§7description " + (
               description != null

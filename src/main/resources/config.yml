@@ -3,7 +3,7 @@ bootstrap:
     shop_information:
       create_table:
         - CREATE TABLE IF NOT EXISTS shop_information (
-        -   id mediumint NOT NULL AUTO_INCREMENT,
+        -   id int NOT NULL AUTO_INCREMENT,
         -   owner varchar(16) NOT NULL,
         -   location text DEFAULT NULL,
         -   description text DEFAULT NULL,
@@ -12,17 +12,29 @@ bootstrap:
         -   PRIMARY KEY(owner)
         - );
       update:
-        - replace into shop_information(owner, location, description) values (?, ?, ?)
+        - replace into shop_information (id, owner, location, description) values (?, ?, ?, ?)
       get_by_owner:
         - select * from shop_information where owner=?
       get_all:
         - select * from shop_information
+      remove_by_owner:
+        - delete from shop_information where owner=?
 
     shop_transaction:
       create_table:
-        - CREATE TABLE IF NOT EXISTS shop_transaction(
-        -   shopId mediumint NOT NULL
-        - );
+        - CREATE TABLE IF NOT EXISTS shop_transaction (
+        -   id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        -   shop_id int NOT NULL,
+        -   dummy varchar(16) NOT NULL,
+        -   price bigint NOT NULL,
+        -   type ENUM("BUY", "SELL") NOT NULL,
+        -   item_data text NOT NULL,
+        -   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        -   CONSTRAINT shop_transaction_ref
+        -     FOREIGN KEY (shop_id)
+        -     REFERENCES shop_information(id)
+        -     ON DELETE CASCADE
+        -  );
 
 view:
   shop:

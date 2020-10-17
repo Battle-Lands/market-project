@@ -19,15 +19,9 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
 
     private final PlayerShopManager playerShopManager;
 
-    private final List<PlayerShopItem> playerShopItems = new ArrayList<>();
-
     @Override
     public List<PlayerShopItem> adaptModel(Void instance) {
-        if (!playerShopItems.isEmpty() && playerShopItems.size() == playerShopManager.getPlayerShopSize()) {
-            return playerShopItems;
-        }
-
-        playerShopItems.clear();
+        final List<PlayerShopItem> playerShopItems = new ArrayList<>();
         for (Optional<PlayerShopEntity> optional : playerShopManager.getAllShopEntities()) {
             if (!optional.isPresent()) continue;
 

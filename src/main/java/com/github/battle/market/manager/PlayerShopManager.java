@@ -2,6 +2,7 @@ package com.github.battle.market.manager;
 
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.cache.PlayerShopCacheLoader;
+import com.github.battle.market.cache.PlayerShopRemovalListener;
 import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.job.ShopEntitySync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("all")
 public final class PlayerShopManager {
@@ -25,13 +25,16 @@ public final class PlayerShopManager {
     private final LoadingCache<String, Optional<PlayerShopEntity>> playerShopCache;
     private final PlayerShopEntitySerializer playerShopEntitySerializer;
     private final PlayerShopEntityAdapter playerShopEntityAdapter;
-    private final @Getter
-    ShopEntitySync entitySync;
+    private final MySQLRequester requester;
     private final MysqlBootstrap bootstrap;
+
+    @Getter
+    private final ShopEntitySync entitySync;
 
     public PlayerShopManager(@NonNull MySQLRequester requester, @NonNull MysqlBootstrap bootstrap) {
         this.playerShopEntitySerializer = new PlayerShopEntitySerializer(requester, bootstrap);
         this.playerShopEntityAdapter = new PlayerShopEntityAdapter();
+        this.requester = requester;
         this.bootstrap = bootstrap;
 
         final PlayerShopCacheLoader loader = new PlayerShopCacheLoader(
@@ -42,8 +45,10 @@ public final class PlayerShopManager {
 
         this.playerShopCache = CacheBuilder
           .newBuilder()
-          .expireAfterWrite(1, TimeUnit.HOURS)
-          .build(loader);
+          .removalListener(new PlayerShopRemovalListener(
+            requester,
+            bootstrap
+          )).build(loader);
 
         this.entitySync = new ShopEntitySync(
           playerShopEntityAdapter,
@@ -54,9 +59,7 @@ public final class PlayerShopManager {
     }
 
     public void putAllEntities(Map<String, Optional<PlayerShopEntity>> optionalMap) {
-        playerShopCache
-          .asMap()
-          .putAll(optionalMap);
+        asShopMap().putAll(optionalMap);
     }
 
     public void refleshPlayerShop(OfflinePlayer player) {
@@ -64,6 +67,17 @@ public final class PlayerShopManager {
         if (playerShop == null) return;
 
         playerShopEntitySerializer.serializeModel(playerShop);
+        if (playerShop.getId() == 0) {
+            playerShopCache.refresh(getName(player));
+        }
+    }
+
+    public boolean hasPlayerShop(OfflinePlayer player) {
+        return asShopMap().containsKey(getName(player));
+    }
+
+    public void invalidPlayerShop(OfflinePlayer player) {
+        playerShopCache.invalidate(getName(player));
     }
 
     public void updatePlayerShop(OfflinePlayer player, @NonNull PlayerShopEntity playerShopEntity) {
@@ -83,11 +97,11 @@ public final class PlayerShopManager {
     }
 
     public int getPlayerShopSize() {
-        return playerShopCache.asMap().size();
+        return asShopMap().size();
     }
 
     public List<Optional<PlayerShopEntity>> getAllShopEntities() {
-        return new ArrayList<>(playerShopCache.asMap().values());
+        return new ArrayList<>(asShopMap().values());
     }
 
     public PlayerShopEntity getLazyPlayerShop(OfflinePlayer player) {
@@ -106,6 +120,10 @@ public final class PlayerShopManager {
         if (!unchecked.isPresent()) return null;
 
         return unchecked.get();
+    }
+
+    public Map<String, Optional<PlayerShopEntity>> asShopMap() {
+        return playerShopCache.asMap();
     }
 
     public String getName(OfflinePlayer player) {
