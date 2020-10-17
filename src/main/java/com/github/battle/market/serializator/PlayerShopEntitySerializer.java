@@ -24,7 +24,6 @@ public final class PlayerShopEntitySerializer implements ModelSerializer<PlayerS
 
         requester.execute(
           updateShopInformation,
-          playerShopEntity.getSqlId(),
           playerShopEntity.getOwner().toLowerCase(),
           serializeLocation(location),
           playerShopEntity.getDescription()

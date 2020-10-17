@@ -12,7 +12,9 @@ bootstrap:
         -   PRIMARY KEY(owner)
         - );
       update:
-        - replace into shop_information (id, owner, location, description) values (?, ?, ?, ?)
+        - insert into shop_information (owner, location, description) values (?, ? ,?)
+        -   ON DUPLICATE KEY UPDATE location=VALUES(location), description=VALUES(description);
+        #- replace into shop_information (id, owner, location, description) values (?, ?, ?, ?)
       get_by_owner:
         - select * from shop_information where owner=?
       get_all:
