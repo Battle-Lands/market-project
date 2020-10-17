@@ -48,7 +48,7 @@ public final class ShopCommand {
         final Player sender = playerContext.getSender();
         final Location location = sender.getLocation();
 
-        final PlayerShopEntity shopEntity = playerShopManager.getPlayerShop(sender);
+        final PlayerShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
         shopEntity.setLocation(location);
 
         if (args != null) {
@@ -56,8 +56,11 @@ public final class ShopCommand {
             shopEntity.setDescription(description);
         }
 
-        playerContext.sendMessage("§aYour shop has been created at %s.", LocationText.serializeLocation(location));
         playerShopManager.refleshPlayerShop(sender);
+        playerContext.sendMessage(
+          "§aYour shop has been created at %s.",
+          LocationText.serializeLocation(location)
+        );
     }
 }
 

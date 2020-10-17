@@ -1,8 +1,8 @@
-package com.github.battle.market.manager;
+package com.github.battle.market.cache;
 
 import com.github.battle.core.database.requester.MySQLRequester;
-import com.github.battle.market.bootstrap.MysqlBootstrap;
 import com.github.battle.market.entity.PlayerShopEntity;
+import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopEntityAdapter;
 import com.google.common.cache.CacheLoader;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public final class PlayerShopCacheLoader extends CacheLoader<String, Optional<Pl
     @Override
     public Optional<PlayerShopEntity> load(String player) throws Exception {
         return requester.result(
-          bootstrap.getQuery("get_shop_information"),
+          bootstrap.getQuery("shop_information.get_by_owner"),
           playerShopEntityAdapter::adaptModel,
           player
         );

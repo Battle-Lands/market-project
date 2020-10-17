@@ -15,7 +15,5 @@ public final class ShopView extends PaginatedView<PlayerShopItem> {
             "000<0>000"
           }, () -> playerShopItemAdapter.adaptModel(null)
         );
-
-        setUpdateAfterClick(true);
     }
 }
