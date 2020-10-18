@@ -1,5 +1,6 @@
 package com.github.battle.market;
 
+import com.github.battle.core.database.reader.SQLReader;
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.market.command.ShopCommand;
@@ -19,17 +20,16 @@ public final class MarketPlugin extends PluginCore {
 
     @Override
     public void onPluginEnable() {
-        saveDefaultConfig();
-
         this.mySQLRequester = new MySQLRequester(
           getCredentialRegistry()
             .getMysqlCredential()
         ).connect();
 
-        this.mysqlBootstrap = new MysqlBootstrap(getConfig(), mySQLRequester, new ForkJoinPool(5))
+        this.mysqlBootstrap = new MysqlBootstrap(this, mySQLRequester, new ForkJoinPool(5))
           .createInitialTables(
             "shop_information.create_table",
-            "shop_transaction.create_table"
+            "shop_transaction.create_table",
+            "shop_information.insert_shop_procedure"
           );
 
         final PlayerShopManager playerShopManager = new PlayerShopManager(
