@@ -48,7 +48,7 @@ public final class MarketPlugin extends PluginCore {
     }
 
     @Override
-    public void onDisable() {
+    public void onPluginDisable() {
         mySQLRequester.close();
         mysqlBootstrap.closeForkJoinPool();
     }
