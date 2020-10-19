@@ -74,9 +74,8 @@ public final class ShopCommand {
 
         playerShopManager.refleshPlayerShop(sender);
         playerContext.sendMessage(
-          "§aYour shop has been created at %s. §7§o(#%s)",
-          LocationText.serializeLocation(location),
-          shopEntity.getId()
+          "§aYour shop has been created at %s.",
+          LocationText.serializeLocation(location)
         );
     }
 }

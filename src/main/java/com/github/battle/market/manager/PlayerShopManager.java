@@ -58,8 +58,12 @@ public final class PlayerShopManager {
         );
     }
 
-    public void putAllEntities(Map<String, Optional<PlayerShopEntity>> optionalMap) {
-        asShopMap().putAll(optionalMap);
+    public void updatePlayerShop(OfflinePlayer player, @NonNull PlayerShopEntity playerShopEntity) {
+        if (!player.hasPlayedBefore()) return;
+        playerShopCache.put(
+          getName(player),
+          playerShopEntity.optional()
+        );
     }
 
     public void refleshPlayerShop(OfflinePlayer player) {
@@ -72,22 +76,6 @@ public final class PlayerShopManager {
         }
     }
 
-    public boolean hasPlayerShop(OfflinePlayer player) {
-        return asShopMap().containsKey(getName(player));
-    }
-
-    public void invalidPlayerShop(OfflinePlayer player) {
-        playerShopCache.invalidate(getName(player));
-    }
-
-    public void updatePlayerShop(OfflinePlayer player, @NonNull PlayerShopEntity playerShopEntity) {
-        if (!player.hasPlayedBefore()) return;
-        playerShopCache.put(
-          getName(player),
-          playerShopEntity.optional()
-        );
-    }
-
     public PlayerShopEntity getEmptyShopEntity(OfflinePlayer player) {
         if (!player.hasPlayedBefore()) return null;
         return PlayerShopEntity
@@ -96,20 +84,11 @@ public final class PlayerShopManager {
           .build();
     }
 
-    public int getPlayerShopSize() {
-        return asShopMap().size();
-    }
-
-    public List<Optional<PlayerShopEntity>> getAllShopEntities() {
-        return new ArrayList<>(asShopMap().values());
-    }
-
     public PlayerShopEntity getLazyPlayerShop(OfflinePlayer player) {
         PlayerShopEntity playerShop = getPlayerShop(player);
         if (playerShop != null) return playerShop;
 
-        playerShop = getEmptyShopEntity(player);
-        updatePlayerShop(player, playerShop);
+        updatePlayerShop(player, (playerShop = getEmptyShopEntity(player)));
         return playerShop;
     }
 
@@ -120,6 +99,26 @@ public final class PlayerShopManager {
         if (!unchecked.isPresent()) return null;
 
         return unchecked.get();
+    }
+
+    public void putAllEntities(Map<String, Optional<PlayerShopEntity>> optionalMap) {
+        asShopMap().putAll(optionalMap);
+    }
+
+    public boolean hasPlayerShop(OfflinePlayer player) {
+        return asShopMap().containsKey(getName(player));
+    }
+
+    public void invalidPlayerShop(OfflinePlayer player) {
+        playerShopCache.invalidate(getName(player));
+    }
+
+    public int getPlayerShopSize() {
+        return asShopMap().size();
+    }
+
+    public List<Optional<PlayerShopEntity>> getAllShopEntities() {
+        return new ArrayList<>(asShopMap().values());
     }
 
     public Map<String, Optional<PlayerShopEntity>> asShopMap() {

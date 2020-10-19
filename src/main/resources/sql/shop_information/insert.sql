@@ -1,0 +1,1 @@
+INSERT INTO shop_information(owner, location, description) VALUES (?, ?, ?)

@@ -1,1 +1,1 @@
-call insert_shop(?, ?, ?)
+UPDATE shop_information SET location=?, description=? WHERE owner=?

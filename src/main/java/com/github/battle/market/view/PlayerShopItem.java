@@ -18,7 +18,7 @@ public final class PlayerShopItem implements PaginatedItem {
 
     @Override
     public ItemStack toItemStack(Player player, PaginatedViewHolder paginatedViewHolder) {
-        final String owner = playerShopEntity.getOwner();
+        final String owner = playerShopEntity.getPlayer().getName();
         final String description = playerShopEntity.getDescription();
 
         return new ItemBuilder(Material.SKULL_ITEM)
