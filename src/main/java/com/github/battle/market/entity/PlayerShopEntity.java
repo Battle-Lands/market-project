@@ -13,7 +13,7 @@ import java.util.Optional;
 @Data
 @Builder
 @ToString
-public final class PlayerShopEntity {
+public final class PlayerShopEntity implements ShopEntity {
 
     private final int id;
     private final String owner;
@@ -22,7 +22,7 @@ public final class PlayerShopEntity {
     private String description;
     private Location location;
 
-    public Optional<PlayerShopEntity> optional() {
+    public Optional<ShopEntity> optional() {
         return Optional.of(this);
     }
 

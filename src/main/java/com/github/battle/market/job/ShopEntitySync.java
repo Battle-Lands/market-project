@@ -2,6 +2,7 @@ package com.github.battle.market.job;
 
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.entity.PlayerShopEntity;
+import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopEntityAdapter;
@@ -15,10 +16,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public final class ShopEntitySync implements Runnable {
+public final class ShopEntitySync extends Thread {
 
     private final PlayerShopEntityAdapter entityAdapter;
     private final PlayerShopManager playerShopManager;
@@ -27,9 +29,9 @@ public final class ShopEntitySync implements Runnable {
 
     @Override
     public void run() {
-        final Map<String, Optional<PlayerShopEntity>> preLoadingCache = new HashMap<>();
+        final Map<String, Optional<ShopEntity>> preLoadingCache = new HashMap<>();
 
-        final Connection connection = requester.getConnection();
+        final Connection connection = Objects.requireNonNull(requester.getConnection());
         final String getAllShopInformation = bootstrap.getQuery("shop_information.get_all");
 
         try (PreparedStatement statement = connection.prepareStatement(getAllShopInformation)) {
@@ -40,7 +42,7 @@ public final class ShopEntitySync implements Runnable {
                     final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(owner);
                     if (!offlinePlayer.hasPlayedBefore()) continue;
 
-                    final Optional<PlayerShopEntity> optional = entityAdapter.adaptModel(resultSet);
+                    final Optional<ShopEntity> optional = entityAdapter.adaptModel(resultSet);
                     if (!optional.isPresent()) continue;
 
                     preLoadingCache.put(owner, optional);

@@ -1,7 +1,7 @@
 view:
   shop:
     item_base:
-      displayname: "Loja do %player_name%"
+      name: "Loja do %player_name%"
       lore:
         - "%battleshop_message_short%"
         - "Battle"

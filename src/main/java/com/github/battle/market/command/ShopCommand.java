@@ -1,7 +1,8 @@
 package com.github.battle.market.command;
 
-import com.github.battle.core.serialization.location.LocationText;
+import com.github.battle.core.serialization.location.text.LocationText;
 import com.github.battle.market.entity.PlayerShopEntity;
+import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.view.ShopView;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import org.bukkit.entity.Player;
 @RequiredArgsConstructor
 public final class ShopCommand {
 
+    private static final String SHOP_PERMISSION = "battlelands.shop.create";
+
     private final PlayerShopManager playerShopManager;
     private final ShopView shopPaginatedView;
 
@@ -31,18 +34,19 @@ public final class ShopCommand {
             return;
         }
 
-        final PlayerShopEntity playerShop = playerShopManager.getPlayerShop(seller);
-        if (playerShop == null) {
+        final ShopEntity shopEntity = playerShopManager.getPlayerShop(seller);
+        if (shopEntity == null) {
             playerContext.sendMessage("§cThat player don't have any shop set");
             return;
         }
 
-        playerContext.sendMessage("shop information %s", playerShop);
+        playerContext.sendMessage("shop information %s", shopEntity);
     }
 
     @Command(
       name = "shop.remove",
-      aliases = {"remover", "delete", "deletar", "rm"}
+      aliases = {"remover", "delete", "deletar", "rm"},
+      permission = SHOP_PERMISSION
     )
     public void removeShopCommand(Context<Player> playerContext) {
         final Player sender = playerContext.getSender();
@@ -53,30 +57,46 @@ public final class ShopCommand {
         }
 
         playerShopManager.invalidPlayerShop(sender);
-        playerContext.sendMessage("§aYou've been deleted your shop.");
+        playerContext.sendMessage("§cYou've been deleted your shop.");
     }
 
     @Command(
       name = "shop.set",
-      aliases = {"define", "definir", "setar"}
+      aliases = {"define", "definir", "setar"},
+      permission = SHOP_PERMISSION
     )
     public void setShopCommand(Context<Player> playerContext, @Optional String[] args) {
         final Player sender = playerContext.getSender();
         final Location location = sender.getLocation();
 
-        final PlayerShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
-        shopEntity.setLocation(location);
+        final ShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
+        if(shopEntity == null) {
+            playerContext.sendMessage("§cIs not possible to get your shop.");
+            return;
+        }
 
-        if (args != null) {
-            final String description = String.join(" ", args);
-            shopEntity.setDescription(description);
+        if(args == null) {
+            shopEntity.setLocation(location);
+            playerContext.sendMessage(
+              "§aYour shop's location has been set to §9'%s'§a.",
+              LocationText.serializeLocation(shopEntity.getLocation())
+            );
+        } else {
+            if (args[0].equalsIgnoreCase("null")) {
+                shopEntity.setDescription(null);
+                playerContext.sendMessage(
+                  "§cYour shop's description has been removed."
+                );
+            } else {
+                shopEntity.setDescription(String.join(" ", args));
+                playerContext.sendMessage(
+                  "§aYour shop's descripition has been set to §9'%s'§a.",
+                  shopEntity.getDescription()
+                );
+            }
         }
 
         playerShopManager.refleshPlayerShop(sender);
-        playerContext.sendMessage(
-          "§aYour shop has been created at %s.",
-          LocationText.serializeLocation(location)
-        );
     }
 }
 

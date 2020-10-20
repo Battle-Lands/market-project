@@ -1,12 +1,15 @@
 package com.github.battle.market.view;
 
 import com.github.battle.market.entity.PlayerShopEntity;
+import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.serializator.PlayerShopItemTemplate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.ItemBuilder;
 import me.saiintbrisson.minecraft.paginator.PaginatedItem;
 import me.saiintbrisson.minecraft.paginator.PaginatedViewHolder;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,24 +17,16 @@ import org.bukkit.inventory.ItemStack;
 @RequiredArgsConstructor
 public final class PlayerShopItem implements PaginatedItem {
 
-    private final PlayerShopEntity playerShopEntity;
+    private final PlayerShopItemTemplate playerShopItemTemplate;
+    private final ShopEntity shopEntity;
 
     @Override
     public ItemStack toItemStack(Player player, PaginatedViewHolder paginatedViewHolder) {
-        final String owner = playerShopEntity.getPlayer().getName();
-        final String description = playerShopEntity.getDescription();
-
+        final OfflinePlayer offlinePlayer = shopEntity.getPlayer();
         return new ItemBuilder(Material.SKULL_ITEM)
-          .lore(
-            "id " + playerShopEntity.getId(),
-            "§7Visite a loja de " + owner,
-            "§7description " + (
-              description != null
-                ? description
-                : "sla"
-            )
-          )
-          .skullOwner(owner)
+          .name(playerShopItemTemplate.getItemBaseName(offlinePlayer))
+          .lore(playerShopItemTemplate.getItemBaseLore(offlinePlayer))
+          .skullOwner(offlinePlayer.getName())
           .build();
     }
 }

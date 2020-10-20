@@ -23,7 +23,7 @@ public final class MysqlBootstrap {
 
     public MysqlBootstrap createInitialTables(@NonNull String... queries) {
         for (String query : queries) {
-            requester.execute(getQuery(query));
+            requester.executeQueries(getQuery(query));
         }
         return this;
     }
