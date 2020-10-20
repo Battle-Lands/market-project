@@ -1,7 +1,6 @@
 package com.github.battle.market.cache;
 
 import com.github.battle.core.database.requester.MySQLRequester;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopEntityAdapter;

@@ -59,22 +59,24 @@ public final class PlayerShopManager {
         );
     }
 
-    public void updatePlayerShop(OfflinePlayer player, @NonNull ShopEntity playerShopEntity) {
+    public void updatePlayerShop(OfflinePlayer player, @NonNull ShopEntity shopEntity) {
         if (!player.hasPlayedBefore()) return;
         playerShopCache.put(
           getName(player),
-          playerShopEntity.optional()
+          shopEntity.optional()
         );
     }
 
-    public void refleshPlayerShop(OfflinePlayer player) {
-        final ShopEntity playerShop = getPlayerShop(player);
-        if (playerShop == null) return;
+    public ShopEntity refleshPlayerShop(OfflinePlayer player) {
+        final ShopEntity shopEntity = getPlayerShop(player);
+        if (shopEntity == null) return null;
 
-        playerShopEntitySerializer.serializeModel(playerShop);
-        if (playerShop.getId() == 0) {
+        playerShopEntitySerializer.serializeModel(shopEntity);
+        if (shopEntity.isCreated()) {
             playerShopCache.refresh(getName(player));
         }
+
+        return getPlayerShop(player);
     }
 
     public ShopEntity getEmptyShopEntity(OfflinePlayer player) {
@@ -82,6 +84,7 @@ public final class PlayerShopManager {
         return PlayerShopEntity
           .builder()
           .owner(getName(player))
+          .created(true)
           .build();
     }
 
@@ -100,6 +103,10 @@ public final class PlayerShopManager {
         if (!unchecked.isPresent()) return null;
 
         return unchecked.get();
+    }
+
+    public boolean hasNonShopSet() {
+        return getAllShopEntities().isEmpty();
     }
 
     public void putAllEntities(Map<String, Optional<ShopEntity>> optionalMap) {

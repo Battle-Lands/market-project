@@ -1,6 +1,5 @@
 package com.github.battle.market.view;
 
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.serializator.PlayerShopItemTemplate;
 import lombok.Getter;

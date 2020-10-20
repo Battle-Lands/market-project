@@ -9,15 +9,22 @@ import java.util.Optional;
 public interface ShopEntity {
 
     int getId();
+
     String getOwner();
+
     Timestamp getCreatedAt();
 
     String getDescription();
+
+    void setDescription(String description);
+
     Location getLocation();
 
-    Optional<ShopEntity> optional();
-    OfflinePlayer getPlayer();
-
     void setLocation(Location location);
-    void setDescription(String description);
+
+    boolean isCreated();
+
+    Optional<ShopEntity> optional();
+
+    OfflinePlayer getPlayer();
 }

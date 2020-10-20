@@ -1,8 +1,5 @@
 package com.github.battle.market.serializator;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.gson.internal.Streams;
 import lombok.NonNull;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
@@ -39,7 +36,7 @@ public final class PlayerShopItemTemplate {
             final String element = PlaceholderAPI.setPlaceholders(player, text);
 
             final boolean containsPlaceholders = PlaceholderAPI.containsPlaceholders(element);
-            if(containsPlaceholders) continue;
+            if (containsPlaceholders) continue;
 
             strings.add(element);
         }

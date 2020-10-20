@@ -1,7 +1,6 @@
 package com.github.battle.market.serializator;
 
 import com.github.battle.core.serialization.ModelAdapter;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.view.PlayerShopItem;

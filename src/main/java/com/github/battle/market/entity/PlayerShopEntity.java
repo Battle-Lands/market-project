@@ -17,6 +17,7 @@ public final class PlayerShopEntity implements ShopEntity {
 
     private final int id;
     private final String owner;
+    private final boolean created;
     private final Timestamp createdAt;
 
     private String description;

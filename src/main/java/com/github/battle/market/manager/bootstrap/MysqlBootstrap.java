@@ -21,10 +21,11 @@ public final class MysqlBootstrap {
         this.reader = new SQLReader(plugin);
     }
 
-    public MysqlBootstrap createInitialTables(@NonNull String... queries) {
-        for (String query : queries) {
-            requester.executeQueries(getQuery(query));
+    public MysqlBootstrap createInitialTables(@NonNull String... rawQueries) {
+        for (int index = 0; index < rawQueries.length; index++) {
+            rawQueries[index] = getQuery(rawQueries[index]);
         }
+        requester.executeQueries(rawQueries);
         return this;
     }
 

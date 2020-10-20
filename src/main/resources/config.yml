@@ -1,7 +1,11 @@
 view:
   shop:
     item_base:
-      name: "Loja do %player_name%"
+      name: "&9Loja do %player_name%"
       lore:
-        - "%battleshop_message_short%"
-        - "Battle"
+        - ""
+        - "&7&o %battleshop_custom_message_short%"
+        - "&7 Já foi vendido o total de &60&7 itens nesta loja."
+        - ""
+        - "&a Clique aqui para teleportar a loja do jogador"
+        - ""

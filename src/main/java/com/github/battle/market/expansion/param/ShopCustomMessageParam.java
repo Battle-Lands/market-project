@@ -18,7 +18,7 @@ public final class ShopCustomMessageParam extends ShopExpansionParam {
         if (shopEntity == null) return null;
 
         final String description = shopEntity.getDescription();
-        if(description == null) return null;
+        if (description == null) return null;
 
         if (params.endsWith("_short")) {
             return description.length() > 57

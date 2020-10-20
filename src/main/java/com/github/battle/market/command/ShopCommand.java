@@ -1,10 +1,11 @@
 package com.github.battle.market.command;
 
 import com.github.battle.core.serialization.location.text.LocationText;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
+import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.view.ShopView;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
@@ -23,6 +24,8 @@ public final class ShopCommand {
     private final PlayerShopManager playerShopManager;
     private final ShopView shopPaginatedView;
 
+    private final ShopEventManager shopEventManager;
+
     @Command(
       name = "shop",
       aliases = "loja",
@@ -30,6 +33,11 @@ public final class ShopCommand {
     )
     public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer seller) {
         if (seller == null) {
+            if(playerShopManager.hasNonShopSet()) {
+                playerContext.sendMessage("§cNo shop has been set on server.");
+                return;
+            }
+
             shopPaginatedView.showInventory(playerContext.getSender());
             return;
         }
@@ -50,13 +58,15 @@ public final class ShopCommand {
     )
     public void removeShopCommand(Context<Player> playerContext) {
         final Player sender = playerContext.getSender();
-        final boolean hasPlayerShop = playerShopManager.hasPlayerShop(sender);
-        if (!hasPlayerShop) {
+        final ShopEntity shopEntity = playerShopManager.getPlayerShop(sender);
+        if (shopEntity == null) {
             playerContext.sendMessage("§cYou don't have any shop set.");
             return;
         }
 
+        shopEventManager.invalidateShop(shopEntity, sender);
         playerShopManager.invalidPlayerShop(sender);
+
         playerContext.sendMessage("§cYou've been deleted your shop.");
     }
 
@@ -69,26 +79,34 @@ public final class ShopCommand {
         final Player sender = playerContext.getSender();
         final Location location = sender.getLocation();
 
-        final ShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
-        if(shopEntity == null) {
+        ShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
+        if (shopEntity == null) {
             playerContext.sendMessage("§cIs not possible to get your shop.");
             return;
         }
 
-        if(args == null) {
-            shopEntity.setLocation(location);
+        if(shopEntity.isCreated()) {
+            shopEntity = playerShopManager.refleshPlayerShop(sender);
+            shopEventManager.proceduralCheckShop(shopEntity, sender);
+        }
+
+        if (args == null) {
+            shopEventManager.setLocation(shopEntity, sender, location);
+            //shopEntity.setLocation(location);
             playerContext.sendMessage(
               "§aYour shop's location has been set to §9'%s'§a.",
               LocationText.serializeLocation(shopEntity.getLocation())
             );
         } else {
             if (args[0].equalsIgnoreCase("null")) {
-                shopEntity.setDescription(null);
+                shopEventManager.setDescription(shopEntity, sender, null);
+                //shopEntity.setDescription(null);
                 playerContext.sendMessage(
                   "§cYour shop's description has been removed."
                 );
             } else {
-                shopEntity.setDescription(String.join(" ", args));
+                shopEventManager.setDescription(shopEntity, sender, String.join(" ", args));
+                //shopEntity.setDescription(String.join(" ", args));
                 playerContext.sendMessage(
                   "§aYour shop's descripition has been set to §9'%s'§a.",
                   shopEntity.getDescription()
