@@ -10,6 +10,7 @@ import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopItemAdapter;
 import com.github.battle.market.view.ShopView;
+import me.saiintbrisson.minecraft.ViewFrame;
 
 import java.util.concurrent.ForkJoinPool;
 
@@ -46,12 +47,14 @@ public final class MarketPlugin extends PluginCore {
         shopExpansion.register();
 
         final PlayerShopItemAdapter playerShopItemAdapter = new PlayerShopItemAdapter(playerShopManager, this);
-        final ShopView shopPaginatedView = new ShopView(template, playerShopManager);
+        final ShopView shopPaginatedView = new ShopView(viewFrame, playerShopItemAdapter);
+
+        viewFrame.register();
 
         this.shopUpdateQueue = new ShopUpdateQueue(this, mysqlBootstrap, mySQLRequester);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue);
 
-        registerListenerFromInventory(this);
+        //registerInventoryListener(shopPaginatedView);
         registerCommands(new ShopCommand(
           playerShopManager,
           shopPaginatedView,

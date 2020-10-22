@@ -5,7 +5,7 @@ import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.view.ShopView;
-import com.google.gson.Gson;
+import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
@@ -38,7 +38,7 @@ public final class ShopCommand {
                 return;
             }
 
-            shopPaginatedView.showInventory(playerContext.getSender());
+            shopPaginatedView.open(playerContext.getSender());
             return;
         }
 

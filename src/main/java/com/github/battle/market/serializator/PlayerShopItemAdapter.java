@@ -3,7 +3,6 @@ package com.github.battle.market.serializator;
 import com.github.battle.core.serialization.ModelAdapter;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
-import com.github.battle.market.view.PlayerShopItem;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
-public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShopItem>, Void> {
+public final class PlayerShopItemAdapter implements ModelAdapter<List<ShopEntity>, Void> {
 
     private final PlayerShopItemTemplate playerShopItemTemplate;
     private final PlayerShopManager playerShopManager;
@@ -28,8 +27,8 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
     }
 
     @Override
-    public List<PlayerShopItem> adaptModel(Void instance) {
-        final List<PlayerShopItem> playerShopItems = new ArrayList<>();
+    public List<ShopEntity> adaptModel(Void instance) {
+        final List<ShopEntity> shopEntities = new ArrayList<>();
         for (Optional<ShopEntity> optional : playerShopManager.getAllShopEntities()) {
             if (!optional.isPresent()) continue;
 
@@ -40,11 +39,9 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
             final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(shopEntity.getOwner());
             if (offlinePlayer.isBanned()) continue;
 
-            playerShopItems.add(
-              new PlayerShopItem(playerShopItemTemplate, shopEntity)
-            );
+            shopEntities.add(shopEntity);
         }
 
-        return playerShopItems;
+        return shopEntities;
     }
 }
