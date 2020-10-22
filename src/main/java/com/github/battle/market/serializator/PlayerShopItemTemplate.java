@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +13,9 @@ import java.util.List;
 public final class PlayerShopItemTemplate {
 
     private final ConfigurationSection section;
-
-    public PlayerShopItemTemplate(@NonNull FileConfiguration configuration) {
-        this.section = configuration.getConfigurationSection("view.shop");
+    public PlayerShopItemTemplate(@NonNull Plugin plugin) {
+        plugin.saveDefaultConfig();
+        this.section = plugin.getConfig().getConfigurationSection("view.shop");
     }
 
     public ConfigurationSection getItemBaseSection() {

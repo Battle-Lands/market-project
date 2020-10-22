@@ -10,8 +10,6 @@ import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopItemAdapter;
 import com.github.battle.market.view.ShopView;
-import me.saiintbrisson.minecraft.ViewFrame;
-
 import java.util.concurrent.ForkJoinPool;
 
 public final class MarketPlugin extends PluginCore {
@@ -22,8 +20,6 @@ public final class MarketPlugin extends PluginCore {
 
     @Override
     public void onPluginEnable() {
-        saveDefaultConfig();
-
         this.mySQLRequester = new MySQLRequester(
           getCredentialRegistry()
             .getMysqlCredential()
@@ -46,10 +42,8 @@ public final class MarketPlugin extends PluginCore {
         final ShopExpansion shopExpansion = new ShopExpansion(playerShopManager);
         shopExpansion.register();
 
-        final PlayerShopItemAdapter playerShopItemAdapter = new PlayerShopItemAdapter(playerShopManager, this);
-        final ShopView shopPaginatedView = new ShopView(viewFrame, playerShopItemAdapter);
-
-        viewFrame.register();
+        final PlayerShopItemAdapter playerShopItemAdapter = new PlayerShopItemAdapter(playerShopManager);
+        final ShopView shopPaginatedView = new ShopView(this, playerShopItemAdapter);
 
         this.shopUpdateQueue = new ShopUpdateQueue(this, mysqlBootstrap, mySQLRequester);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue);
@@ -65,7 +59,7 @@ public final class MarketPlugin extends PluginCore {
     @Override
     public void onPluginDisable() {
         mysqlBootstrap.executeAsync(shopUpdateQueue);
-        mySQLRequester.close();
         mysqlBootstrap.closeForkJoinPool();
+        mySQLRequester.close();
     }
 }

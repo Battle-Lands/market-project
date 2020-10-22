@@ -1,54 +1,58 @@
 package com.github.battle.market.view;
 
+import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.serializator.PlayerShopItemAdapter;
+import com.github.battle.market.serializator.PlayerShopItemTemplate;
 import lombok.NonNull;
-import me.saiintbrisson.minecraft.PreRenderViewContext;
-import me.saiintbrisson.minecraft.ViewContext;
-import me.saiintbrisson.minecraft.ViewFrame;
-import me.saiintbrisson.minecraft.ViewItem;
-import me.saiintbrisson.minecraft.pagination.PaginatedView;
-import me.saiintbrisson.minecraft.pagination.PaginatedViewContext;
+import me.saiintbrisson.minecraft.*;
 import me.saiintbrisson.minecraft.utils.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public final class ShopView extends PaginatedView<ShopEntity> {
 
     private final PlayerShopItemAdapter playerShopItemAdapter;
-    public ShopView(@NonNull PlayerShopItemAdapter playerShopItemAdapter) {
+    private final PlayerShopItemTemplate itemTemplate;
+    public ShopView(@NonNull PluginCore plugin, @NonNull PlayerShopItemAdapter playerShopItemAdapter) {
         super(6, "Battle Shop");
+        this.itemTemplate = new PlayerShopItemTemplate(plugin);
         this.playerShopItemAdapter = playerShopItemAdapter;
 
-        setPaginationSource(playerShopItemAdapter.adaptModel(null));
+        setCancelOnClick(true);
+        setupViewFrame(plugin);
     }
 
-    @Override
-    protected List<ShopEntity> onPaginationRender(PaginatedViewContext paginatedViewContext) {
-        return playerShopItemAdapter.adaptModel(null);
+    private void setupViewFrame(@NonNull PluginCore pluginCore) {
+        final ViewFrame viewFrame = pluginCore.getViewFrameService();
+        viewFrame.addView(this);
+
+        if(viewFrame.getListener() == null) {
+            viewFrame.register();
+        }
     }
 
     @Override
     protected void onOpen(PreRenderViewContext context) {
-        context.setInventoryTitle("opened inventory");
-    }
+        setPaginationSource(playerShopItemAdapter.adaptModel(null));
 
-    @Override
-    protected void onClose(ViewContext context) {
-        context.getPlayer().sendMessage("fuck you");
+        final Player player = context.getPlayer();
+        player.playSound(player.getLocation(), Sound.NOTE_PLING, 3F, 1F);
     }
 
     @Override
     protected void onPaginationItemRender(PaginatedViewContext paginatedViewContext, ViewItem viewItem, ShopEntity shopEntity) {
+        final OfflinePlayer offlinePlayer = shopEntity.getPlayer();
 
-        System.out.println("called");
-        final ItemStack itemStack = ItemBuilder
+        viewItem.withItem(ItemBuilder
           .create(Material.SKULL_ITEM)
           .skull(shopEntity.getOwner())
-          .build();
-
-        viewItem.withItem(itemStack);
+          .name(itemTemplate.getItemBaseName(offlinePlayer))
+          .lore(itemTemplate.getItemBaseLore(offlinePlayer))
+          .build()
+        );
     }
 }

@@ -1,11 +1,13 @@
 package com.github.battle.market.serializator;
 
 import com.github.battle.core.serialization.ModelAdapter;
+import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
+import me.saiintbrisson.minecraft.View;
+import me.saiintbrisson.minecraft.ViewFrame;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
@@ -18,13 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public final class PlayerShopItemAdapter implements ModelAdapter<List<ShopEntity>, Void> {
 
-    private final PlayerShopItemTemplate playerShopItemTemplate;
+    @NonNull
     private final PlayerShopManager playerShopManager;
-
-    public PlayerShopItemAdapter(@NonNull PlayerShopManager playerShopManager, Plugin plugin) {
-        this.playerShopItemTemplate = new PlayerShopItemTemplate(plugin.getConfig());
-        this.playerShopManager = playerShopManager;
-    }
 
     @Override
     public List<ShopEntity> adaptModel(Void instance) {
