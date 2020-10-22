@@ -46,7 +46,7 @@ public final class MarketPlugin extends PluginCore {
         shopExpansion.register();
 
         final PlayerShopItemAdapter playerShopItemAdapter = new PlayerShopItemAdapter(playerShopManager, this);
-        final ShopView shopPaginatedView = new ShopView(this, playerShopItemAdapter);
+        final ShopView shopPaginatedView = new ShopView(template, playerShopManager);
 
         this.shopUpdateQueue = new ShopUpdateQueue(this, mysqlBootstrap, mySQLRequester);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue);

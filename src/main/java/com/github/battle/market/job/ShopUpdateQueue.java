@@ -17,18 +17,19 @@ public final class ShopUpdateQueue extends BukkitRunnable {
 
     private final Queue<ShopUpdateEvent<?>> shopUpdateEvents;
     private final ShopUpdateSerializer shopUpdateSerializer;
+
     public ShopUpdateQueue(@NonNull Plugin plugin, @NonNull MysqlBootstrap bootstrap, @NonNull MySQLRequester requester) {
         this.shopUpdateEvents = new ConcurrentLinkedQueue<>();
         this.shopUpdateSerializer = new ShopUpdateSerializer(bootstrap, requester);
 
-        runTaskTimerAsynchronously(plugin, 0, 20*60*30);
+        runTaskTimerAsynchronously(plugin, 0, 20 * 60 * 30);
     }
 
     @Override
     public void run() {
         ShopUpdateEvent<?> shopUpdateEvent;
         while ((shopUpdateEvent = shopUpdateEvents.poll()) != null) {
-            if(shopUpdateEvent.getType() == REMOVED) continue;
+            if (shopUpdateEvent.getType() == REMOVED) continue;
             shopUpdateSerializer.serializeModel(shopUpdateEvent);
         }
     }

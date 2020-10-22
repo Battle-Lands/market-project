@@ -5,7 +5,7 @@ import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.view.ShopView;
-import lombok.NonNull;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
@@ -33,7 +33,7 @@ public final class ShopCommand {
     )
     public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer seller) {
         if (seller == null) {
-            if(playerShopManager.hasNonShopSet()) {
+            if (playerShopManager.hasNonShopSet()) {
                 playerContext.sendMessage("§cNo shop has been set on server.");
                 return;
             }
@@ -85,7 +85,7 @@ public final class ShopCommand {
             return;
         }
 
-        if(shopEntity.isCreated()) {
+        if (shopEntity.isCreated()) {
             shopEntity = playerShopManager.refleshPlayerShop(sender);
             shopEventManager.proceduralCheckShop(shopEntity, sender);
         }

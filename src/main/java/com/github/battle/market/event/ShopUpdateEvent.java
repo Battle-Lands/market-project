@@ -13,11 +13,13 @@ import java.sql.Timestamp;
 @ToString
 public abstract class ShopUpdateEvent<T> extends ShopEvent {
 
-    private @Setter T oldValue;
-    private @Setter T newValue;
-
     private final Timestamp timestamp;
     private final UpdateType type;
+    private @Setter
+    T oldValue;
+    private @Setter
+    T newValue;
+
     public ShopUpdateEvent(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull UpdateType type) {
         super(shopEntity, player);
         this.timestamp = new Timestamp(System.currentTimeMillis());

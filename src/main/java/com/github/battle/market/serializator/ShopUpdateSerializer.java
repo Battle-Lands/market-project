@@ -18,7 +18,7 @@ public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEve
 
     @Override
     public void serializeModel(@NonNull ShopUpdateEvent<?> shopUpdateEvent) {
-        if(shopUpdateEvent == null) return;
+        if (shopUpdateEvent == null) return;
         final ShopEntity shopEntity = shopUpdateEvent.getShopEntity();
 
         final ShopUpdateEvent.UpdateType type = shopUpdateEvent.getType();
@@ -35,11 +35,13 @@ public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEve
     public Object match(@NonNull ShopUpdateEvent.UpdateType updateType, Object value) {
         switch (updateType) {
             case REMOVED_LOCATION:
-            case UPDATED_LOCATION: return value != null
-              ? LocationText.serializeLocation((Location) value)
-              : null;
+            case UPDATED_LOCATION:
+                return value != null
+                  ? LocationText.serializeLocation((Location) value)
+                  : null;
 
-            default: return value;
+            default:
+                return value;
         }
     }
 }
