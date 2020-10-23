@@ -14,7 +14,7 @@ public final class ShopCustomMessageParam extends ShopExpansionParam {
 
     @Override
     protected String onRequest(OfflinePlayer player, @NonNull String params) {
-        final ShopEntity shopEntity = getPlayerShopManager().getPlayerShop(player);
+        final ShopEntity shopEntity = getPlayerShop(player);
         if (shopEntity == null) return null;
 
         final String description = shopEntity.getDescription();

@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +30,8 @@ public final class ShopEntitySync extends Thread {
         final Connection connection = Objects.requireNonNull(requester.getConnection());
         final String getAllShopInformation = bootstrap.getQuery("shop_information.get_all");
 
-        try (PreparedStatement statement = connection.prepareStatement(getAllShopInformation)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(getAllShopInformation)) {
                 while (resultSet.next()) {
                     final String owner = resultSet.getString("owner");
 

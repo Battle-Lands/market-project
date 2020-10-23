@@ -18,13 +18,35 @@ public interface ShopEntity {
 
     void setDescription(String description);
 
+    boolean hasDescriptionSet();
+
     Location getLocation();
 
     void setLocation(Location location);
 
+    boolean hasLocationSet();
+
+    void setCreated(boolean created);
+
     boolean isCreated();
+
+    void setState(ShopState state);
+
+    ShopState getState();
+
+    boolean isAccessible();
 
     Optional<ShopEntity> optional();
 
     OfflinePlayer getPlayer();
+
+    long getSellAmount();
+
+    void setSellAmount(long sellAmount);
+
+    long getBuyAmount();
+
+    void setBuyAmount(long buyAmount);
+
+    long getTotalAmount();
 }

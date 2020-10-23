@@ -33,8 +33,10 @@ public final class MysqlBootstrap {
         return reader.getQuery(sectionPath);
     }
 
-    public void executeAsync(@NonNull Runnable runnable) {
-        forkJoinPool.execute(runnable);
+    public void executeAsync(@NonNull Runnable... runnables) {
+        for (Runnable runnable : runnables) {
+            forkJoinPool.execute(runnable);
+        }
     }
 
     public void closeForkJoinPool() {

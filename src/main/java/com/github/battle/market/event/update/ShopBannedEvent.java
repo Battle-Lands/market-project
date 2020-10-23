@@ -6,9 +6,9 @@ import com.github.battle.market.event.ShopUpdateEvent;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-public final class ShopCreatedEvent extends ShopUpdateEvent<ShopState> {
+public final class ShopBannedEvent extends ShopUpdateEvent<ShopState> {
 
-    public ShopCreatedEvent(@NonNull ShopEntity shopEntity, @NonNull Player player) {
-        super(shopEntity, player, UpdateType.CREATED);
+    public ShopBannedEvent(@NonNull ShopEntity shopEntity, @NonNull Player player) {
+        super(shopEntity, player, UpdateType.BANNED);
     }
 }

@@ -2,9 +2,9 @@ package com.github.battle.market.manager;
 
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.cache.PlayerShopCacheLoader;
-import com.github.battle.market.cache.PlayerShopRemovalListener;
 import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.exception.ShopTravelException;
 import com.github.battle.market.job.ShopEntitySync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.PlayerShopEntityAdapter;
@@ -14,6 +14,7 @@ import com.google.common.cache.LoadingCache;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public final class PlayerShopManager {
     private final LoadingCache<String, Optional<ShopEntity>> playerShopCache;
     private final PlayerShopEntitySerializer playerShopEntitySerializer;
     private final PlayerShopEntityAdapter playerShopEntityAdapter;
+    private final ShopTravelManager shopTravelManager;
     private final MySQLRequester requester;
     private final MysqlBootstrap bootstrap;
 
@@ -35,6 +37,7 @@ public final class PlayerShopManager {
     public PlayerShopManager(@NonNull MySQLRequester requester, @NonNull MysqlBootstrap bootstrap) {
         this.playerShopEntitySerializer = new PlayerShopEntitySerializer(requester, bootstrap);
         this.playerShopEntityAdapter = new PlayerShopEntityAdapter();
+        this.shopTravelManager = new ShopTravelManager(this);
         this.requester = requester;
         this.bootstrap = bootstrap;
 
@@ -46,10 +49,7 @@ public final class PlayerShopManager {
 
         this.playerShopCache = CacheBuilder
           .newBuilder()
-          .removalListener(new PlayerShopRemovalListener(
-            requester,
-            bootstrap
-          )).build(loader);
+          .build(loader);
 
         this.entitySync = new ShopEntitySync(
           playerShopEntityAdapter,
@@ -72,7 +72,7 @@ public final class PlayerShopManager {
         if (shopEntity == null) return null;
 
         playerShopEntitySerializer.serializeModel(shopEntity);
-        if (shopEntity.isCreated()) {
+        if(shopEntity.isCreated()) {
             playerShopCache.refresh(getName(player));
         }
 
@@ -89,11 +89,15 @@ public final class PlayerShopManager {
     }
 
     public ShopEntity getLazyPlayerShop(OfflinePlayer player) {
-        ShopEntity playerShop = getPlayerShop(player);
-        if (playerShop != null) return playerShop;
+        final ShopEntity playerShop = getPlayerShop(player);
+        if (playerShop != null) {
+            if(!playerShop.getState().isCanInitialize()) return null;
+            return playerShop;
+        }
 
-        updatePlayerShop(player, (playerShop = getEmptyShopEntity(player)));
-        return playerShop;
+        final ShopEntity emptyShopEntity = getEmptyShopEntity(player);
+        updatePlayerShop(player, emptyShopEntity);
+        return emptyShopEntity;
     }
 
     public ShopEntity getPlayerShop(OfflinePlayer player) {
@@ -105,6 +109,13 @@ public final class PlayerShopManager {
         return unchecked.get();
     }
 
+    public ShopEntity getCheckedPlayerShop(OfflinePlayer player) {
+        final ShopEntity shopEntity = getPlayerShop(player);
+        if(shopEntity == null || !shopEntity.isAccessible()) return null;
+
+        return shopEntity;
+    }
+
     public boolean hasNonShopSet() {
         return getAllShopEntities().isEmpty();
     }
@@ -114,11 +125,7 @@ public final class PlayerShopManager {
     }
 
     public boolean hasPlayerShop(OfflinePlayer player) {
-        return asShopMap().containsKey(getName(player));
-    }
-
-    public void invalidPlayerShop(OfflinePlayer player) {
-        playerShopCache.invalidate(getName(player));
+        return getCheckedPlayerShop(player) != null;
     }
 
     public int getPlayerShopSize() {
@@ -135,5 +142,9 @@ public final class PlayerShopManager {
 
     public String getName(OfflinePlayer player) {
         return player.getName().toLowerCase();
+    }
+
+    public void travelPlayerShop(@NonNull Player player, @NonNull ShopEntity shopEntity) throws ShopTravelException {
+        shopTravelManager.travelPlayerShop(player, shopEntity);
     }
 }

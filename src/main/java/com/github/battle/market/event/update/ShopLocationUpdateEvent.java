@@ -9,6 +9,6 @@ import org.bukkit.entity.Player;
 public final class ShopLocationUpdateEvent extends ShopUpdateEvent<Location> {
 
     public ShopLocationUpdateEvent(@NonNull ShopEntity shopEntity, @NonNull Player player) {
-        super(shopEntity, player, ShopUpdateEvent.UpdateType.UPDATED_LOCATION);
+        super(shopEntity, player, UpdateType.UPDATED_LOCATION);
     }
 }

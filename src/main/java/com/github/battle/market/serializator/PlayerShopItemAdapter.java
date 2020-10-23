@@ -7,7 +7,6 @@ import com.github.battle.market.view.PlayerShopItem;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 
@@ -19,12 +18,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShopItem>, Void> {
 
+    public static PlayerShopItemTemplate ITEM_TEMPLATE;
+
     private final PlayerShopItemTemplate playerShopItemTemplate;
     private final PlayerShopManager playerShopManager;
 
     public PlayerShopItemAdapter(@NonNull PlayerShopManager playerShopManager, Plugin plugin) {
         this.playerShopItemTemplate = new PlayerShopItemTemplate(plugin.getConfig());
         this.playerShopManager = playerShopManager;
+
+        ITEM_TEMPLATE = playerShopItemTemplate;
     }
 
     @Override
@@ -37,12 +40,10 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
             // But i have no idea how can i do this
             final ShopEntity shopEntity = optional.get();
 
-            final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(shopEntity.getOwner());
-            if (offlinePlayer.isBanned()) continue;
+            final OfflinePlayer offlinePlayer = shopEntity.getPlayer();
+            if (!shopEntity.isAccessible() || offlinePlayer.isBanned()) continue;
 
-            playerShopItems.add(
-              new PlayerShopItem(playerShopItemTemplate, shopEntity)
-            );
+            playerShopItems.add(new PlayerShopItem(shopEntity));
         }
 
         return playerShopItems;

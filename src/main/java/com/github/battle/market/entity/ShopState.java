@@ -1,0 +1,33 @@
+package com.github.battle.market.entity;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum ShopState {
+    ACCESSIBLE(true, true),
+    REMOVED(false, true),
+    BANNED(false, false);
+
+    private final boolean accessible;
+    private final boolean canInitialize;
+
+    public static ShopState getStateByName(@NonNull String name) {
+        for (ShopState value : values()) {
+            if(value.name().equalsIgnoreCase(name)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public static ShopState getState(ShopState state) {
+        return state != null ? state : ShopState.ACCESSIBLE;
+    }
+
+    public static String getStateName(ShopState state) {
+        return getState(state).name();
+    }
+}

@@ -1,1 +1,1 @@
-UPDATE shop_information SET location=?, description=? WHERE owner=?
+UPDATE shop_information SET location=?, description=?, state=? WHERE owner=?

@@ -1,6 +1,7 @@
 package com.github.battle.market.manager;
 
 import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.entity.ShopState;
 import com.github.battle.market.event.ShopEvent;
 import com.github.battle.market.event.ShopUpdateEvent;
 import com.github.battle.market.event.update.*;
@@ -42,14 +43,32 @@ public final class ShopEventManager {
 
     public ShopEvent proceduralCheckShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
         final ShopUpdateEvent shopEvent = new ShopCreatedEvent(shopEntity, player);
-        shopEvent.setNewValue(shopEntity.getId());
+
+        changeStatus(shopEntity, shopEvent, ShopState.ACCESSIBLE);
         return addToQueue(shopEvent.callEvent());
     }
 
     public ShopEvent invalidateShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
         final ShopUpdateEvent shopEvent = new ShopRemovedEvent(shopEntity, player);
-        shopEvent.setOldValue(shopEntity.getId());
+
+        shopEntity.setDescription(null);
+        shopEntity.setLocation(null);
+
+        changeStatus(shopEntity, shopEvent, ShopState.REMOVED);
         return addToQueue(shopEvent.callEvent());
+    }
+
+    public ShopEvent banShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
+        final ShopUpdateEvent shopEvent = new ShopBannedEvent(shopEntity, player);
+
+        changeStatus(shopEntity, shopEvent, ShopState.BANNED);
+        return addToQueue(shopEvent.callEvent());
+    }
+
+    private void changeStatus(@NonNull ShopEntity shopEntity, @NonNull ShopUpdateEvent shopEvent, @NonNull ShopState state) {
+        shopEvent.setOldValue(shopEntity.getState());
+        shopEvent.setNewValue(state);
+        shopEntity.setState(state);
     }
 
     public ShopEvent addToQueue(@NonNull ShopEvent shopEvent) {

@@ -54,15 +54,15 @@ public final class MarketPlugin extends PluginCore {
         registerListenerFromInventory(this);
         registerCommands(new ShopCommand(
           playerShopManager,
-          shopPaginatedView,
-          shopEventManager
+          shopEventManager,
+          shopPaginatedView
         ));
     }
 
     @Override
     public void onPluginDisable() {
-        mysqlBootstrap.executeAsync(shopUpdateQueue);
-        mySQLRequester.close();
+        shopUpdateQueue.run();
         mysqlBootstrap.closeForkJoinPool();
+        mySQLRequester.close();
     }
 }
