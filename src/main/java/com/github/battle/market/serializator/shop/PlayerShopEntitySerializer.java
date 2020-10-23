@@ -1,4 +1,4 @@
-package com.github.battle.market.serializator;
+package com.github.battle.market.serializator.shop;
 
 import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.core.serialization.ModelSerializer;
@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class PlayerShopEntitySerializer implements ModelSerializer<ShopEntity> {
 
-    private final MySQLRequester requester;
     private final MysqlBootstrap bootstrap;
 
     @Override
@@ -24,8 +23,8 @@ public final class PlayerShopEntitySerializer implements ModelSerializer<ShopEnt
         final String description = playerShopEntity.getDescription();
         final String ownerLower = playerShopEntity.getOwner().toLowerCase();
 
-        final int updateResult = requester.executeUpdate(
-          bootstrap.getQuery("shop_information.update"),
+        final int updateResult = bootstrap.executeUpdate(
+          "shop_information.update",
           rawLocation,
           description,
           ShopState.getStateName(playerShopEntity.getState()),
@@ -33,8 +32,8 @@ public final class PlayerShopEntitySerializer implements ModelSerializer<ShopEnt
         );
 
         if (updateResult == 0) {
-            requester.executeUpdate(
-              bootstrap.getQuery("shop_information.insert"),
+            bootstrap.executeUpdate(
+              "shop_information.insert",
               ownerLower,
               rawLocation,
               description

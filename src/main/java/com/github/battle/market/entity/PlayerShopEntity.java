@@ -26,32 +26,4 @@ public final class PlayerShopEntity implements ShopEntity {
 
     private long buyAmount;
     private long sellAmount;
-
-    public Optional<ShopEntity> optional() {
-        return Optional.of(this);
-    }
-
-    public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(owner);
-    }
-
-    @Override
-    public long getTotalAmount() {
-        return buyAmount + sellAmount;
-    }
-
-    @Override
-    public boolean hasDescriptionSet() {
-        return description != null;
-    }
-
-    @Override
-    public boolean hasLocationSet() {
-        return location != null;
-    }
-
-    @Override
-    public boolean isAccessible() {
-        return created || state.isAccessible();
-    }
 }

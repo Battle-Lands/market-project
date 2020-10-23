@@ -1,4 +1,4 @@
-package com.github.battle.market.serializator;
+package com.github.battle.market.serializator.item;
 
 import com.github.battle.core.serialization.ModelAdapter;
 import com.github.battle.market.entity.ShopEntity;

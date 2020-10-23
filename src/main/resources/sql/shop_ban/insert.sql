@@ -1,0 +1,1 @@
+INSERT INTO shop_ban_history(shop_id, staff, reason, type) VALUES (?, ?, ?, ?)

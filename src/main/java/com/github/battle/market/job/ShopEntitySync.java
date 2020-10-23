@@ -4,7 +4,7 @@ import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
-import com.github.battle.market.serializator.PlayerShopEntityAdapter;
+import com.github.battle.market.serializator.shop.PlayerShopEntityAdapter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,14 +20,13 @@ public final class ShopEntitySync extends Thread {
 
     private final PlayerShopEntityAdapter entityAdapter;
     private final PlayerShopManager playerShopManager;
-    private final MySQLRequester requester;
     private final MysqlBootstrap bootstrap;
 
     @Override
     public void run() {
         final Map<String, Optional<ShopEntity>> preLoadingCache = new HashMap<>();
 
-        final Connection connection = Objects.requireNonNull(requester.getConnection());
+        final Connection connection = Objects.requireNonNull(bootstrap.getRequester().getConnection());
         final String getAllShopInformation = bootstrap.getQuery("shop_information.get_all");
 
         try (Statement statement = connection.createStatement()) {

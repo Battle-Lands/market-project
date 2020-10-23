@@ -1,7 +1,9 @@
 package com.github.battle.market.manager;
 
+import com.github.battle.market.entity.ShopBanEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.entity.ShopState;
+import com.github.battle.market.event.ShopBanEvent;
 import com.github.battle.market.event.ShopEvent;
 import com.github.battle.market.event.ShopUpdateEvent;
 import com.github.battle.market.event.update.*;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player;
 public final class ShopEventManager {
 
     private final ShopUpdateQueue shopUpdateQueue;
+    private final ShopBanManager shopBanManager;
 
     public ShopEvent setLocation(@NonNull ShopEntity shopEntity, @NonNull Player player, Location location) {
         final ShopUpdateEvent event = location != null
@@ -58,11 +61,28 @@ public final class ShopEventManager {
         return addToQueue(shopEvent.callEvent());
     }
 
-    public ShopEvent banShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
-        final ShopUpdateEvent shopEvent = new ShopBannedEvent(shopEntity, player);
+    public ShopBanEvent banShop(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull String reason) {
+        final ShopBanEvent shopEvent = new ShopBannedEvent(shopEntity, player);
 
+        shopEvent.setReason(reason);
         changeStatus(shopEntity, shopEvent, ShopState.BANNED);
-        return addToQueue(shopEvent.callEvent());
+
+        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToQueue(shopEvent.callEvent());
+        shopBanManager.addShopBan(shopBanEvent.getShopBanEntity());
+
+        return shopBanEvent;
+    }
+
+    public ShopBanEvent unbanShop(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull String reason) {
+        final ShopBanEvent shopEvent = new ShopUnbannedEvent(shopEntity, player);
+
+        shopEvent.setReason(reason);
+        changeStatus(shopEntity, shopEvent, ShopState.ACCESSIBLE);
+
+        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToQueue(shopEvent.callEvent());
+        shopBanManager.addShopBan(shopBanEvent.getShopBanEntity());
+
+        return shopBanEvent;
     }
 
     private void changeStatus(@NonNull ShopEntity shopEntity, @NonNull ShopUpdateEvent shopEvent, @NonNull ShopState state) {

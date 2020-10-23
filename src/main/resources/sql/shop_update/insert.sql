@@ -1,1 +1,1 @@
-INSERT INTO shop_update(shop_id, type, old_value, new_value, created_at) VALUES (?, ?, ?, ?, ?)
+INSERT INTO shop_update_history(shop_id, type, old_value, new_value, created_at) VALUES (?, ?, ?, ?, ?)

@@ -7,8 +7,8 @@ import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.exception.ShopTravelException;
 import com.github.battle.market.job.ShopEntitySync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
-import com.github.battle.market.serializator.PlayerShopEntityAdapter;
-import com.github.battle.market.serializator.PlayerShopEntitySerializer;
+import com.github.battle.market.serializator.shop.PlayerShopEntityAdapter;
+import com.github.battle.market.serializator.shop.PlayerShopEntitySerializer;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import lombok.Getter;
@@ -16,10 +16,7 @@ import lombok.NonNull;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @SuppressWarnings("all")
 public final class PlayerShopManager {
@@ -28,22 +25,19 @@ public final class PlayerShopManager {
     private final PlayerShopEntitySerializer playerShopEntitySerializer;
     private final PlayerShopEntityAdapter playerShopEntityAdapter;
     private final ShopTravelManager shopTravelManager;
-    private final MySQLRequester requester;
     private final MysqlBootstrap bootstrap;
 
     @Getter
     private final ShopEntitySync entitySync;
 
-    public PlayerShopManager(@NonNull MySQLRequester requester, @NonNull MysqlBootstrap bootstrap) {
-        this.playerShopEntitySerializer = new PlayerShopEntitySerializer(requester, bootstrap);
+    public PlayerShopManager(@NonNull MysqlBootstrap bootstrap) {
+        this.playerShopEntitySerializer = new PlayerShopEntitySerializer(bootstrap);
         this.playerShopEntityAdapter = new PlayerShopEntityAdapter();
         this.shopTravelManager = new ShopTravelManager(this);
-        this.requester = requester;
         this.bootstrap = bootstrap;
 
         final PlayerShopCacheLoader loader = new PlayerShopCacheLoader(
           playerShopEntityAdapter,
-          requester,
           bootstrap
         );
 
@@ -54,7 +48,6 @@ public final class PlayerShopManager {
         this.entitySync = new ShopEntitySync(
           playerShopEntityAdapter,
           this,
-          requester,
           bootstrap
         );
     }
@@ -111,7 +104,7 @@ public final class PlayerShopManager {
 
     public ShopEntity getCheckedPlayerShop(OfflinePlayer player) {
         final ShopEntity shopEntity = getPlayerShop(player);
-        if(shopEntity == null || !shopEntity.isAccessible()) return null;
+        if(shopEntity == null || !shopEntity.isAccessible() || player.isBanned()) return null;
 
         return shopEntity;
     }

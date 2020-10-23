@@ -15,7 +15,6 @@ import org.bukkit.Location;
 public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEvent<?>> {
 
     private final MysqlBootstrap bootstrap;
-    private final MySQLRequester requester;
 
     @Override
     public void serializeModel(@NonNull ShopUpdateEvent<?> shopUpdateEvent) {
@@ -23,8 +22,8 @@ public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEve
         final ShopEntity shopEntity = shopUpdateEvent.getShopEntity();
 
         final UpdateType type = shopUpdateEvent.getType();
-        requester.executeUpdate(
-          bootstrap.getQuery("shop_update.insert"),
+        bootstrap.executeUpdate(
+          "shop_update.insert",
           shopEntity.getId(),
           type.name(),
           match(type, shopUpdateEvent.getOldValue()),

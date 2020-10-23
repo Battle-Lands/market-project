@@ -1,0 +1,1 @@
+select * from shop_ban_history where shop_id=?

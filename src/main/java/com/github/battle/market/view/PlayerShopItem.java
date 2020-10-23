@@ -1,8 +1,8 @@
 package com.github.battle.market.view;
 
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.serializator.PlayerShopItemAdapter;
-import com.github.battle.market.serializator.PlayerShopItemTemplate;
+import com.github.battle.market.serializator.item.PlayerShopItemAdapter;
+import com.github.battle.market.serializator.item.PlayerShopItemTemplate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.saiintbrisson.minecraft.ItemBuilder;

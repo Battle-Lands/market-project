@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class ShopUpdateQueue extends BukkitRunnable {
 
-    private final Queue<ShopUpdateEvent<?>> shopUpdateEvents;
+    private final Queue<ShopUpdateEvent<?>> shopUpdateEventQueue;
     private final ShopUpdateSerializer shopUpdateSerializer;
 
-    public ShopUpdateQueue(@NonNull Plugin plugin, @NonNull MysqlBootstrap bootstrap, @NonNull MySQLRequester requester) {
-        this.shopUpdateEvents = new ConcurrentLinkedQueue<>();
-        this.shopUpdateSerializer = new ShopUpdateSerializer(bootstrap, requester);
+    public ShopUpdateQueue(@NonNull Plugin plugin, @NonNull MysqlBootstrap bootstrap) {
+        this.shopUpdateEventQueue = new ConcurrentLinkedQueue<>();
+        this.shopUpdateSerializer = new ShopUpdateSerializer(bootstrap);
 
         runTaskTimerAsynchronously(plugin, 0, 20 * 60 * 30);
     }
@@ -27,12 +27,12 @@ public final class ShopUpdateQueue extends BukkitRunnable {
     @Override
     public void run() {
         ShopUpdateEvent<?> shopUpdateEvent;
-        while ((shopUpdateEvent = shopUpdateEvents.poll()) != null) {
+        while ((shopUpdateEvent = shopUpdateEventQueue.poll()) != null) {
             shopUpdateSerializer.serializeModel(shopUpdateEvent);
         }
     }
 
     public void addUpdateToQueue(@NonNull ShopUpdateEvent<?> shopUpdateEvent) {
-        shopUpdateEvents.add(shopUpdateEvent);
+        shopUpdateEventQueue.add(shopUpdateEvent);
     }
 }

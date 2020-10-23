@@ -1,4 +1,4 @@
-package com.github.battle.market.serializator;
+package com.github.battle.market.serializator.item;
 
 import lombok.NonNull;
 import me.clip.placeholderapi.PlaceholderAPI;

@@ -2,12 +2,16 @@ package com.github.battle.market.manager.bootstrap;
 
 import com.github.battle.core.database.reader.SQLReader;
 import com.github.battle.core.database.requester.MySQLRequester;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.Plugin;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.concurrent.ForkJoinPool;
 
+@Getter
 @RequiredArgsConstructor
 public final class MysqlBootstrap {
 
@@ -37,6 +41,12 @@ public final class MysqlBootstrap {
         for (Runnable runnable : runnables) {
             forkJoinPool.execute(runnable);
         }
+    }
+
+    public int executeUpdate(@NonNull String rawQuery, Object... objects) {
+        return requester.executeUpdate(
+          getQuery(rawQuery), objects
+        );
     }
 
     public void closeForkJoinPool() {
