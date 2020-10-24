@@ -1,6 +1,7 @@
 package com.github.battle.market.manager;
 
 import com.github.battle.market.entity.ShopBanEntity;
+import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.job.ShopBanQueue;
 import com.github.battle.market.job.ShopBanSync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
@@ -8,6 +9,7 @@ import com.github.battle.market.serializator.ban.ShopBanAdapter;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,13 +20,15 @@ import java.util.Map;
 public final class ShopBanManager {
 
     private final Map<Integer, EntryBanEntity> entryBanEntities;
+    private final PlayerShopManager playerShopManager;
     private final ShopBanAdapter shopBanAdapter;
     private final ShopBanQueue shopBanQueue;
     private final MysqlBootstrap bootstrap;
     private final ShopBanSync shopBanSync;
 
-    public ShopBanManager(@NonNull ShopBanQueue shopBanQueue) {
+    public ShopBanManager(@NonNull ShopBanQueue shopBanQueue, @NonNull PlayerShopManager playerShopManager) {
         this.entryBanEntities = new HashMap<>();
+        this.playerShopManager = playerShopManager;
         this.shopBanAdapter = new ShopBanAdapter();
         this.shopBanQueue = shopBanQueue;
         this.bootstrap = shopBanQueue.getBootstrap();
@@ -40,6 +44,13 @@ public final class ShopBanManager {
 
     public List<ShopBanEntity> getShopBanEntities(@NonNull int id) {
         return getEntryBan(id).getShopBanEntities();
+    }
+
+    public ShopBanManager removePlayerShopEntryBan(@NonNull OfflinePlayer offlinePlayer) {
+        final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
+        if (shopEntity == null) return this;
+
+        return removeEntryBan(shopEntity.getId());
     }
 
     public ShopBanManager removeEntryBan(@NonNull int id) {

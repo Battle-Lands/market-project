@@ -6,6 +6,7 @@ import com.github.battle.market.command.ShopCommand;
 import com.github.battle.market.expansion.ShopExpansion;
 import com.github.battle.market.job.ShopBanQueue;
 import com.github.battle.market.job.ShopUpdateQueue;
+import com.github.battle.market.listener.PlayerShopEntityListener;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopBanManager;
 import com.github.battle.market.manager.ShopEventManager;
@@ -52,9 +53,10 @@ public final class MarketPlugin extends PluginCore {
         this.shopUpdateQueue = new ShopUpdateQueue(this, mysqlBootstrap);
         this.shopBanQueue = new ShopBanQueue(this, mysqlBootstrap);
 
-        final ShopBanManager shopBanManager = new ShopBanManager(shopBanQueue);
+        final ShopBanManager shopBanManager = new ShopBanManager(shopBanQueue, playerShopManager);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue, shopBanManager);
 
+        registerListeners(new PlayerShopEntityListener(shopBanManager));
         registerListenerFromInventory(this);
         registerCommands(new ShopCommand(
           playerShopManager,
