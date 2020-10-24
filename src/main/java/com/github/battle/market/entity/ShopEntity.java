@@ -23,13 +23,13 @@ public interface ShopEntity {
 
     void setLocation(Location location);
 
-    void setCreated(boolean created);
-
     boolean isCreated();
 
-    void setState(ShopState state);
+    void setCreated(boolean created);
 
     ShopState getState();
+
+    void setState(ShopState state);
 
     long getSellAmount();
 
@@ -48,7 +48,9 @@ public interface ShopEntity {
     }
 
     default boolean isAccessible() {
-        return isCreated() || getState().isAccessible();
+        return !getPlayer().isBanned() && (
+          getState().isAccessible() || isCreated()
+        );
     }
 
     default long getTotalAmount() {
@@ -61,5 +63,9 @@ public interface ShopEntity {
 
     default OfflinePlayer getPlayer() {
         return Bukkit.getOfflinePlayer(getOwner());
+    }
+
+    default boolean isBanned() {
+        return getState() == ShopState.BANNED;
     }
 }

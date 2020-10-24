@@ -1,32 +1,20 @@
 package com.github.battle.market.command;
 
 import com.github.battle.core.serialization.location.text.LocationText;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.entity.ShopState;
 import com.github.battle.market.exception.ShopTravelException;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopEventManager;
 import com.github.battle.market.view.ShopView;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.annotation.Optional;
 import me.saiintbrisson.minecraft.command.command.Context;
 import me.saiintbrisson.minecraft.command.target.CommandTarget;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.chat.TextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 
 @SuppressWarnings("all")
 @RequiredArgsConstructor
@@ -45,7 +33,7 @@ public final class ShopCommand {
     )
     public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer offlinePlayer) {
         final Player sender = playerContext.getSender();
-        if(offlinePlayer != null) {
+        if (offlinePlayer != null) {
             travelShopCommand(sender, offlinePlayer);
             return;
         }
@@ -64,7 +52,7 @@ public final class ShopCommand {
             return;
         }
 
-        if(!shopEntity.hasLocationSet()) {
+        if (!shopEntity.hasLocationSet()) {
             player.sendMessage("§cThis shop dont have any location set. Please inform the owner.");
             return;
         }
@@ -76,7 +64,7 @@ public final class ShopCommand {
             );
 
             final boolean successfulOnTeleport = player.teleport(shopEntity.getLocation());
-            if(successfulOnTeleport && shopEntity.hasDescriptionSet()) {
+            if (successfulOnTeleport && shopEntity.hasDescriptionSet()) {
                 player.sendMessage(shopEntity.getDescription());
             }
         } catch (ShopTravelException exception) {
@@ -109,55 +97,12 @@ public final class ShopCommand {
     }
 
     @Command(
-      name = "shop.ban",
-      permission = "battlelands.shop.ban"
-    )
-    public void banShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String reason) {
-        final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
-        if (shopEntity == null) {
-            playerContext.sendMessage("§cYou don't have any shop set.");
-            return;
-        }
-
-        shopEventManager.banShop(shopEntity, playerContext.getSender(), reason);
-        playerShopManager.refleshPlayerShop(offlinePlayer);
-
-        playerContext.sendMessage(
-          "§cYou've banned shop's id %s of %s",
-          shopEntity.getId(),
-          shopEntity.getOwner()
-        );
-    }
-
-    @Command(
-      name = "shop.unban",
-      permission = "battlelands.shop.ban"
-    )
-    public void unbanShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String reason) {
-        final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
-        if (shopEntity == null) {
-            playerContext.sendMessage("§cYou don't have any shop set.");
-            return;
-        }
-
-        shopEventManager.unbanShop(shopEntity, playerContext.getSender(), reason);
-        playerShopManager.refleshPlayerShop(offlinePlayer);
-
-        playerContext.sendMessage(
-          "§cYou've banned shop's id %s of %s",
-          shopEntity.getId(),
-          shopEntity.getOwner()
-        );
-    }
-
-    @Command(
       name = "shop.set",
       aliases = {"define", "definir", "setar"},
       permission = SHOP_PERMISSION
     )
     public void setShopCommand(Context<Player> playerContext, @Optional String[] args) {
         final Player sender = playerContext.getSender();
-        final Location location = sender.getLocation();
 
         ShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
         if (shopEntity == null) {
@@ -165,7 +110,8 @@ public final class ShopCommand {
             return;
         }
 
-        if (!shopEntity.isAccessible() || shopEntity.isCreated()) {
+        if (!shopEntity.isAccessible()) {
+            System.out.println("is not accessible called");
             final ShopState state = shopEntity.getState();
             shopEntity = playerShopManager.refleshPlayerShop(sender);
 
@@ -173,6 +119,7 @@ public final class ShopCommand {
             shopEventManager.proceduralCheckShop(shopEntity, sender);
         }
 
+        final Location location = sender.getLocation();
         if (args == null) {
             shopEventManager.setLocation(shopEntity, sender, location);
             //shopEntity.setLocation(location);
@@ -198,6 +145,60 @@ public final class ShopCommand {
         }
 
         playerShopManager.refleshPlayerShop(sender);
+    }
+
+    @Command(
+      name = "shop.ban",
+      permission = "battlelands.shop.ban"
+    )
+    public void banShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String[] args) {
+        final String reason = String.join(" ", args);
+        final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
+        if (shopEntity == null) {
+            playerContext.sendMessage("§cYou don't have any shop set.");
+            return;
+        }
+
+        if (shopEntity.isBanned()) {
+            playerContext.sendMessage("This shop is already banned.");
+            return;
+        }
+
+        shopEventManager.banShop(shopEntity, playerContext.getSender(), reason);
+        playerShopManager.refleshPlayerShop(offlinePlayer);
+
+        playerContext.sendMessage(
+          "§cYou've banned shop's id %s of %s",
+          shopEntity.getId(),
+          shopEntity.getOwner()
+        );
+    }
+
+    @Command(
+      name = "shop.unban",
+      permission = "battlelands.shop.ban"
+    )
+    public void unbanShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String[] args) {
+        final String reason = String.join(" ", args);
+        final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
+        if (shopEntity == null) {
+            playerContext.sendMessage("§cYou don't have any shop set.");
+            return;
+        }
+
+        if (!shopEntity.isBanned()) {
+            playerContext.sendMessage("This shop is not banned.");
+            return;
+        }
+
+        shopEventManager.unbanShop(shopEntity, playerContext.getSender(), reason);
+        playerShopManager.refleshPlayerShop(offlinePlayer);
+
+        playerContext.sendMessage(
+          "§cYou've unbanned shop's id %s of %s",
+          shopEntity.getId(),
+          shopEntity.getOwner()
+        );
     }
 }
 

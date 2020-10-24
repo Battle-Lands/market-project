@@ -16,7 +16,7 @@ public enum ShopState {
 
     public static ShopState getStateByName(@NonNull String name) {
         for (ShopState value : values()) {
-            if(value.name().equalsIgnoreCase(name)) {
+            if (value.name().equalsIgnoreCase(name)) {
                 return value;
             }
         }

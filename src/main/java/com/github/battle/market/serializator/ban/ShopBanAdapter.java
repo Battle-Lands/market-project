@@ -7,15 +7,14 @@ import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public final class ShopBanAdapter implements ModelAdapter<ShopBanEntity, ResultSet> {
 
     @Override
     public ShopBanEntity adaptModel(ResultSet resultSet) throws SQLException {
-        if(resultSet == null) return null;
+        if (resultSet == null) return null;
 
-        final String rawStaffName = resultSet.getString("staff");
+        final String rawStaffName = resultSet.getString("staff").toLowerCase();
         final String rawType = resultSet.getString("type");
 
         return ShopBanEntity.builder()

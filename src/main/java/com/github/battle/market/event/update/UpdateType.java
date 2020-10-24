@@ -14,7 +14,7 @@ public enum UpdateType {
 
     public static UpdateType getUpdateTypeByName(@NonNull String name) {
         for (UpdateType type : values()) {
-            if(type.name().equalsIgnoreCase(name)) {
+            if (type.name().equalsIgnoreCase(name)) {
                 return type;
             }
         }

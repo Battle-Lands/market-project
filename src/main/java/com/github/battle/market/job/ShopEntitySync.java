@@ -1,6 +1,5 @@
 package com.github.battle.market.job;
 
-import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
@@ -9,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

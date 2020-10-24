@@ -7,8 +7,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.concurrent.ForkJoinPool;
 
 @Getter

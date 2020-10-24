@@ -1,8 +1,6 @@
 package com.github.battle.market.job;
 
-import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.event.ShopUpdateEvent;
-import com.github.battle.market.event.update.UpdateType;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.ShopUpdateSerializer;
 import lombok.NonNull;

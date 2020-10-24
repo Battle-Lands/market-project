@@ -3,12 +3,9 @@ package com.github.battle.market.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
 @Data
 @Builder

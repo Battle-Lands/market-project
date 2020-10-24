@@ -1,6 +1,5 @@
 package com.github.battle.market.manager;
 
-import com.github.battle.market.entity.ShopBanEntity;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.entity.ShopState;
 import com.github.battle.market.event.ShopBanEvent;
@@ -53,16 +52,20 @@ public final class ShopEventManager {
 
     public ShopEvent invalidateShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
         final ShopUpdateEvent shopEvent = new ShopRemovedEvent(shopEntity, player);
-
-        shopEntity.setDescription(null);
-        shopEntity.setLocation(null);
+        clearAllShopInfo(shopEntity);
 
         changeStatus(shopEntity, shopEvent, ShopState.REMOVED);
         return addToQueue(shopEvent.callEvent());
     }
 
+    public void clearAllShopInfo(@NonNull ShopEntity shopEntity) {
+        shopEntity.setDescription(null);
+        shopEntity.setLocation(null);
+    }
+
     public ShopBanEvent banShop(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull String reason) {
         final ShopBanEvent shopEvent = new ShopBannedEvent(shopEntity, player);
+        clearAllShopInfo(shopEntity);
 
         shopEvent.setReason(reason);
         changeStatus(shopEntity, shopEvent, ShopState.BANNED);

@@ -1,20 +1,14 @@
 package com.github.battle.market.manager;
 
-import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.entity.ShopBanEntity;
-import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.job.ShopBanQueue;
+import com.github.battle.market.job.ShopBanSync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.ban.ShopBanAdapter;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,23 +21,37 @@ public final class ShopBanManager {
     private final ShopBanAdapter shopBanAdapter;
     private final ShopBanQueue shopBanQueue;
     private final MysqlBootstrap bootstrap;
+    private final ShopBanSync shopBanSync;
+
     public ShopBanManager(@NonNull ShopBanQueue shopBanQueue) {
         this.entryBanEntities = new HashMap<>();
         this.shopBanAdapter = new ShopBanAdapter();
         this.shopBanQueue = shopBanQueue;
         this.bootstrap = shopBanQueue.getBootstrap();
+        this.shopBanSync = new ShopBanSync(shopBanAdapter, bootstrap);
     }
 
     public void addShopBan(@NonNull ShopBanEntity shopBanEntity) {
-        final EntryBanEntity entryBan = getEntryBan(shopBanEntity.getPunishmentId());
+        getEntryBan(shopBanEntity.getPunishmentId())
+          .addBanEntity(shopBanEntity);
+
         shopBanQueue.addBanEntityToQueue(shopBanEntity);
+    }
+
+    public List<ShopBanEntity> getShopBanEntities(@NonNull int id) {
+        return getEntryBan(id).getShopBanEntities();
+    }
+
+    public ShopBanManager removeEntryBan(@NonNull int id) {
+        entryBanEntities.remove(id);
+        return this;
     }
 
     private EntryBanEntity getEntryBan(@NonNull int id) {
         EntryBanEntity entryBanEntity = entryBanEntities.get(id);
-        if(entryBanEntity != null) return entryBanEntity;
+        if (entryBanEntity != null) return entryBanEntity;
 
-        entryBanEntity = new EntryBanEntity(id);
+        entryBanEntity = new EntryBanEntity(id).syncEntities(shopBanSync);
         entryBanEntities.put(id, entryBanEntity);
 
         return entryBanEntity;
@@ -55,26 +63,14 @@ public final class ShopBanManager {
         private final List<ShopBanEntity> shopBanEntities;
         private final int id;
 
-        public EntryBanEntity(@NonNull int id, @NonNull MysqlBootstrap bootstrap) {
+        public EntryBanEntity(@NonNull int id) {
             this.id = id;
             this.shopBanEntities = new ArrayList<>();
-
-            syncEntities(bootstrap);
         }
 
-        private void syncEntities(@NonNull MysqlBootstrap bootstrap, @NonNull ShopBanAdapter shopBanAdapter) {
-            final Connection connection = bootstrap.getRequester().getConnection();
-
-            final String getAllById = bootstrap.getQuery("shop_ban.get_by_id");
-            try (PreparedStatement statement = connection.prepareStatement(getAllById)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        addBanEntity(shopBanAdapter.adaptModel(resultSet));
-                    }
-                }
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
+        public EntryBanEntity syncEntities(@NonNull ShopBanSync shopBanSync) {
+            shopBanEntities.addAll(shopBanSync.sync(id));
+            return this;
         }
 
         public void addBanEntity(@NonNull ShopBanEntity shopBanEntity) {

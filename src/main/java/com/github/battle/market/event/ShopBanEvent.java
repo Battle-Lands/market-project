@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public abstract class ShopBanEvent extends ShopUpdateEvent<ShopState> {
 
     private final ShopBanEntity shopBanEntity;
+
     public ShopBanEvent(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull UpdateType type) {
         super(shopEntity, player, type);
 
@@ -22,11 +23,11 @@ public abstract class ShopBanEvent extends ShopUpdateEvent<ShopState> {
           .build();
     }
 
-    public void setReason(@NonNull String reason) {
-        shopBanEntity.setReason(reason);
-    }
-
     public String getReason() {
         return shopBanEntity.getReason();
+    }
+
+    public void setReason(@NonNull String reason) {
+        shopBanEntity.setReason(reason);
     }
 }

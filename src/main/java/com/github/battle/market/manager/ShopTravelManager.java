@@ -21,7 +21,7 @@ public final class ShopTravelManager {
 
     public boolean checkIfShopLocationIsTrust(@NonNull ShopEntity shopEntity) {
         final Location location = shopEntity.getLocation();
-        if(location == null) return false;
+        if (location == null) return false;
 
         final int minX = location.getBlockX() - 3;
 

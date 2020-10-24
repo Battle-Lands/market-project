@@ -1,6 +1,5 @@
 package com.github.battle.market.manager;
 
-import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.market.cache.PlayerShopCacheLoader;
 import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
@@ -16,7 +15,10 @@ import lombok.NonNull;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @SuppressWarnings("all")
 public final class PlayerShopManager {
@@ -53,7 +55,7 @@ public final class PlayerShopManager {
     }
 
     public void updatePlayerShop(OfflinePlayer player, @NonNull ShopEntity shopEntity) {
-        if (!player.hasPlayedBefore()) return;
+        if (!checkPlayerCondition(player)) return;
         playerShopCache.put(
           getName(player),
           shopEntity.optional()
@@ -65,7 +67,7 @@ public final class PlayerShopManager {
         if (shopEntity == null) return null;
 
         playerShopEntitySerializer.serializeModel(shopEntity);
-        if(shopEntity.isCreated()) {
+        if (shopEntity.isCreated()) {
             playerShopCache.refresh(getName(player));
         }
 
@@ -73,7 +75,7 @@ public final class PlayerShopManager {
     }
 
     public ShopEntity getEmptyShopEntity(OfflinePlayer player) {
-        if (!player.hasPlayedBefore()) return null;
+        if (!checkPlayerCondition(player)) return null;
         return PlayerShopEntity
           .builder()
           .owner(getName(player))
@@ -81,10 +83,14 @@ public final class PlayerShopManager {
           .build();
     }
 
+    public boolean checkPlayerCondition(OfflinePlayer player) {
+        return player != null && (player.isOnline() || player.hasPlayedBefore());
+    }
+
     public ShopEntity getLazyPlayerShop(OfflinePlayer player) {
         final ShopEntity playerShop = getPlayerShop(player);
         if (playerShop != null) {
-            if(!playerShop.getState().isCanInitialize()) return null;
+            if (!playerShop.getState().isCanInitialize()) return null;
             return playerShop;
         }
 
@@ -94,7 +100,7 @@ public final class PlayerShopManager {
     }
 
     public ShopEntity getPlayerShop(OfflinePlayer player) {
-        if (!player.hasPlayedBefore()) return null;
+        if (!checkPlayerCondition(player)) return null;
 
         final Optional<ShopEntity> unchecked = playerShopCache.getUnchecked(getName(player));
         if (!unchecked.isPresent()) return null;
@@ -104,7 +110,7 @@ public final class PlayerShopManager {
 
     public ShopEntity getCheckedPlayerShop(OfflinePlayer player) {
         final ShopEntity shopEntity = getPlayerShop(player);
-        if(shopEntity == null || !shopEntity.isAccessible() || player.isBanned()) return null;
+        if (shopEntity == null || !shopEntity.isAccessible()) return null;
 
         return shopEntity;
     }
