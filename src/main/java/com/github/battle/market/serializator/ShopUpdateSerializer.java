@@ -32,18 +32,16 @@ public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEve
     }
 
     public Object match(@NonNull UpdateType updateType, Object value) {
+        if(value == null) return null;
+
         switch (updateType) {
             case REMOVED_LOCATION:
             case UPDATED_LOCATION:
-                return value != null
-                  ? LocationText.serializeLocation((Location) value)
-                  : null;
+                return LocationText.serializeLocation((Location) value);
             case CREATED:
             case REMOVED:
             case BANNED:
-                return value != null
-                  ? ((Enum<?>) value).name()
-                  : null;
+                return ((Enum<?>) value).name();
             default:
                 return value;
         }
