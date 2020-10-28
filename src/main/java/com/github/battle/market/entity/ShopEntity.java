@@ -3,6 +3,7 @@ package com.github.battle.market.entity;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -36,11 +37,15 @@ public interface ShopEntity {
 
     long getSellAmount();
 
-    void setSellAmount(long sellAmount);
+    void setSellAmount(long amount);
+
+    void addSellAmount(long amount);
 
     long getBuyAmount();
 
-    void setBuyAmount(long buyAmount);
+    void setBuyAmount(long amount);
+
+    void addBuyAmount(long amount);
 
     default boolean hasLocationSet() {
         return getLocation() != null;

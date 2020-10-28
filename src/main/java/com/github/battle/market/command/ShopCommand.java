@@ -38,18 +38,16 @@ public final class ShopCommand {
                 travelShopCommand(sender, offlinePlayer);
             } catch (ShopTravelException exception) {
                 playerContext.sendMessage(
-                  String.format(
-                    "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
-                    exception.getClass().getSimpleName(),
-                    exception.getCause())
+                  "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
+                  exception.getClass().getSimpleName(),
+                  exception.getCause()
                 );
             }
-
             return;
         }
 
-        final boolean hasNoIndex = shopPaginatedView.showInventory(sender);
-        if (!hasNoIndex) {
+        final boolean hasInventoryIndex = shopPaginatedView.showInventory(sender);
+        if (!hasInventoryIndex) {
             playerContext.sendMessage("§cNo shop has been set on server.");
             return;
         }

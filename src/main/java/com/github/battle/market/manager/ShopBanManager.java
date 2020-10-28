@@ -46,16 +46,15 @@ public final class ShopBanManager {
         return getEntryBan(id).getShopBanEntities();
     }
 
-    public ShopBanManager removePlayerShopEntryBan(@NonNull OfflinePlayer offlinePlayer) {
+    public void removePlayerShopEntryBan(@NonNull OfflinePlayer offlinePlayer) {
         final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
-        if (shopEntity == null) return this;
+        if (shopEntity == null) return;
 
-        return removeEntryBan(shopEntity.getId());
+        removeEntryBan(shopEntity.getId());
     }
 
-    public ShopBanManager removeEntryBan(@NonNull int id) {
+    public void removeEntryBan(@NonNull int id) {
         entryBanEntities.remove(id);
-        return this;
     }
 
     private EntryBanEntity getEntryBan(@NonNull int id) {

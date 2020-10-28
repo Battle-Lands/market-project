@@ -28,6 +28,8 @@ public final class PlayerShopEntityAdapter implements ModelAdapter<Optional<Shop
           .description(set.getString("description"))
           .createdAt(set.getTimestamp("created_at"))
           .state(ShopState.getStateByName(rawState))
+          .sellAmount(set.getLong("sellAmount"))
+          .buyAmount(set.getLong("buyAmount"))
           .build()
           .optional();
     }

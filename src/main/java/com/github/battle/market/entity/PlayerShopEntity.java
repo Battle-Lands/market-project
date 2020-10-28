@@ -43,4 +43,14 @@ public final class PlayerShopEntity implements ShopEntity {
           ? offlinePlayer
           : (offlinePlayer = PluginCore.getOfflinePlayer(owner));
     }
+
+    @Override
+    public void addSellAmount(long amount) {
+        sellAmount += amount;
+    }
+
+    @Override
+    public void addBuyAmount(long amount) {
+        buyAmount += amount;
+    }
 }

@@ -6,6 +6,7 @@ import com.github.battle.market.command.ShopCommand;
 import com.github.battle.market.expansion.ShopExpansion;
 import com.github.battle.market.job.ShopBanQueue;
 import com.github.battle.market.job.ShopUpdateQueue;
+import com.github.battle.market.listener.ChestShopActionListener;
 import com.github.battle.market.listener.PlayerShopEntityListener;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopBanManager;
@@ -56,7 +57,7 @@ public final class MarketPlugin extends PluginCore {
         final ShopBanManager shopBanManager = new ShopBanManager(shopBanQueue, playerShopManager);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue, shopBanManager);
 
-        registerListeners(new PlayerShopEntityListener(shopBanManager));
+        registerListeners(new PlayerShopEntityListener(shopBanManager), new ChestShopActionListener());
         registerListenerFromInventory(this);
         registerCommands(new ShopCommand(
           playerShopManager,
