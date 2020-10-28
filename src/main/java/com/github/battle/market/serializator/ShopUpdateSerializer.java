@@ -32,7 +32,7 @@ public final class ShopUpdateSerializer implements ModelSerializer<ShopUpdateEve
     }
 
     public Object match(@NonNull UpdateType updateType, Object value) {
-        if(value == null) return null;
+        if (value == null) return null;
 
         switch (updateType) {
             case REMOVED_LOCATION:

@@ -23,11 +23,7 @@ public enum ShopState {
         return null;
     }
 
-    public static ShopState getState(ShopState state) {
-        return state != null ? state : ShopState.ACCESSIBLE;
-    }
-
     public static String getStateName(ShopState state) {
-        return getState(state).name();
+        return state.name();
     }
 }

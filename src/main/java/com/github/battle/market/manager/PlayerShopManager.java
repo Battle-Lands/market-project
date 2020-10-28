@@ -62,7 +62,7 @@ public final class PlayerShopManager {
         );
     }
 
-    public ShopEntity refleshPlayerShop(OfflinePlayer player) {
+    public ShopEntity refreshPlayerShop(OfflinePlayer player) {
         final ShopEntity shopEntity = getPlayerShop(player);
         if (shopEntity == null) return null;
 
@@ -84,14 +84,15 @@ public final class PlayerShopManager {
     }
 
     public boolean checkPlayerCondition(OfflinePlayer player) {
-        return player != null && (player.isOnline() || player.hasPlayedBefore());
+        return player != null && (player.isOnline() || player.getLastPlayed() != 0);
     }
 
     public ShopEntity getLazyPlayerShop(OfflinePlayer player) {
         final ShopEntity playerShop = getPlayerShop(player);
         if (playerShop != null) {
-            if (!playerShop.getState().isCanInitialize()) return null;
-            return playerShop;
+            return playerShop.canInitialize()
+              ? playerShop
+              : null;
         }
 
         final ShopEntity emptyShopEntity = getEmptyShopEntity(player);

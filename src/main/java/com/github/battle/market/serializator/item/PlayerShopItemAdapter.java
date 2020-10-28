@@ -38,7 +38,7 @@ public final class PlayerShopItemAdapter implements ModelAdapter<List<PlayerShop
             // The bellow lines cause a unnecessary cache route, i need to fix this
             // But i have no idea how can i do this
             final ShopEntity shopEntity = optional.get();
-            if (!shopEntity.isAccessible()) continue;
+            if (!playerShopManager.checkPlayerCondition(shopEntity.getPlayer()) || !shopEntity.isAccessible()) continue;
 
             playerShopItems.add(new PlayerShopItem(shopEntity));
         }

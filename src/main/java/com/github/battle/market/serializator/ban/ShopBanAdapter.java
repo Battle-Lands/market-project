@@ -1,9 +1,9 @@
 package com.github.battle.market.serializator.ban;
 
+import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.core.serialization.ModelAdapter;
 import com.github.battle.market.entity.ShopBanEntity;
 import com.github.battle.market.event.update.UpdateType;
-import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ public final class ShopBanAdapter implements ModelAdapter<ShopBanEntity, ResultS
         return ShopBanEntity.builder()
           .punishmentId(resultSet.getInt("id"))
           .shopId(resultSet.getInt("shop_id"))
-          .staff(Bukkit.getOfflinePlayer(rawStaffName))
+          .staff(PluginCore.getOfflinePlayer(rawStaffName))
           .reason(resultSet.getString("reason"))
           .type(UpdateType.getUpdateTypeByName(rawType))
           .build();

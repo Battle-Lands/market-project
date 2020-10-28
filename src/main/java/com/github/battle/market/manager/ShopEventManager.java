@@ -89,7 +89,7 @@ public final class ShopEventManager {
     }
 
     private void changeStatus(@NonNull ShopEntity shopEntity, @NonNull ShopUpdateEvent shopEvent, @NonNull ShopState state) {
-        shopEvent.setOldValue(shopEntity.getState());
+        shopEvent.setOldValue(shopEntity.getRawState());
         shopEvent.setNewValue(state);
         shopEntity.setState(state);
     }

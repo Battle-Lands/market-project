@@ -34,7 +34,17 @@ public final class ShopCommand {
     public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer offlinePlayer) {
         final Player sender = playerContext.getSender();
         if (offlinePlayer != null) {
-            travelShopCommand(sender, offlinePlayer);
+            try {
+                travelShopCommand(sender, offlinePlayer);
+            } catch (ShopTravelException exception) {
+                playerContext.sendMessage(
+                  String.format(
+                    "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
+                    exception.getClass().getSimpleName(),
+                    exception.getCause())
+                );
+            }
+
             return;
         }
 
@@ -45,7 +55,7 @@ public final class ShopCommand {
         }
     }
 
-    public void travelShopCommand(Player player, OfflinePlayer offlinePlayer) {
+    public void travelShopCommand(Player player, OfflinePlayer offlinePlayer) throws ShopTravelException {
         final ShopEntity shopEntity = playerShopManager.getCheckedPlayerShop(offlinePlayer);
         if (shopEntity == null) {
             player.sendMessage("§cThat player don't have any shop set");
@@ -57,23 +67,14 @@ public final class ShopCommand {
             return;
         }
 
-        try {
-            playerShopManager.travelPlayerShop(
-              player,
-              shopEntity
-            );
+        playerShopManager.travelPlayerShop(
+          player,
+          shopEntity
+        );
 
-            final boolean successfulOnTeleport = player.teleport(shopEntity.getLocation());
-            if (successfulOnTeleport && shopEntity.hasDescriptionSet()) {
-                player.sendMessage(shopEntity.getDescription());
-            }
-        } catch (ShopTravelException exception) {
-            player.sendMessage(
-              String.format(
-                "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
-                exception.getClass().getSimpleName(),
-                exception.getCause())
-            );
+        final boolean successfulOnTeleport = player.teleport(shopEntity.getLocation());
+        if (successfulOnTeleport && shopEntity.hasDescriptionSet()) {
+            player.sendMessage(shopEntity.getDescription());
         }
     }
 
@@ -91,7 +92,7 @@ public final class ShopCommand {
         }
 
         shopEventManager.invalidateShop(shopEntity, sender);
-        playerShopManager.refleshPlayerShop(sender);
+        playerShopManager.refreshPlayerShop(sender);
 
         playerContext.sendMessage("§cYou've been deleted your shop.");
     }
@@ -103,17 +104,15 @@ public final class ShopCommand {
     )
     public void setShopCommand(Context<Player> playerContext, @Optional String[] args) {
         final Player sender = playerContext.getSender();
-
         ShopEntity shopEntity = playerShopManager.getLazyPlayerShop(sender);
         if (shopEntity == null) {
             playerContext.sendMessage("§cIs not possible to get your shop.");
             return;
         }
 
-        if (!shopEntity.isAccessible()) {
-            System.out.println("is not accessible called");
-            final ShopState state = shopEntity.getState();
-            shopEntity = playerShopManager.refleshPlayerShop(sender);
+        if (shopEntity.isCreated()) {
+            final ShopState state = shopEntity.getRawState();
+            shopEntity = playerShopManager.refreshPlayerShop(sender);
 
             shopEntity.setState(state);
             shopEventManager.proceduralCheckShop(shopEntity, sender);
@@ -144,7 +143,7 @@ public final class ShopCommand {
             }
         }
 
-        playerShopManager.refleshPlayerShop(sender);
+        playerShopManager.refreshPlayerShop(sender);
     }
 
     @Command(
@@ -155,7 +154,7 @@ public final class ShopCommand {
         final String reason = String.join(" ", args);
         final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
         if (shopEntity == null) {
-            playerContext.sendMessage("§cYou don't have any shop set.");
+            playerContext.sendMessage("§cThat player don't have any shop set.");
             return;
         }
 
@@ -165,7 +164,7 @@ public final class ShopCommand {
         }
 
         shopEventManager.banShop(shopEntity, playerContext.getSender(), reason);
-        playerShopManager.refleshPlayerShop(offlinePlayer);
+        playerShopManager.refreshPlayerShop(offlinePlayer);
 
         playerContext.sendMessage(
           "§cYou've banned shop's id %s of %s",
@@ -182,7 +181,7 @@ public final class ShopCommand {
         final String reason = String.join(" ", args);
         final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
         if (shopEntity == null) {
-            playerContext.sendMessage("§cYou don't have any shop set.");
+            playerContext.sendMessage("§cThat player don't have any shop set.");
             return;
         }
 
@@ -192,7 +191,7 @@ public final class ShopCommand {
         }
 
         shopEventManager.unbanShop(shopEntity, playerContext.getSender(), reason);
-        playerShopManager.refleshPlayerShop(offlinePlayer);
+        playerShopManager.refreshPlayerShop(offlinePlayer);
 
         playerContext.sendMessage(
           "§cYou've unbanned shop's id %s of %s",

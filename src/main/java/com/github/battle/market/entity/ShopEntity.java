@@ -1,6 +1,5 @@
 package com.github.battle.market.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
@@ -31,6 +30,10 @@ public interface ShopEntity {
 
     void setState(ShopState state);
 
+    ShopState getRawState();
+
+    OfflinePlayer getPlayer();
+
     long getSellAmount();
 
     void setSellAmount(long sellAmount);
@@ -48,9 +51,11 @@ public interface ShopEntity {
     }
 
     default boolean isAccessible() {
-        return !getPlayer().isBanned() && (
-          getState().isAccessible() || isCreated()
-        );
+        return getState().isAccessible() && !getPlayer().isBanned();
+    }
+
+    default boolean canInitialize() {
+        return getState().isCanInitialize();
     }
 
     default long getTotalAmount() {
@@ -59,10 +64,6 @@ public interface ShopEntity {
 
     default Optional<ShopEntity> optional() {
         return Optional.of(this);
-    }
-
-    default OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(getOwner());
     }
 
     default boolean isBanned() {

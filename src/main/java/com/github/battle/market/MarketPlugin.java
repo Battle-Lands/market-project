@@ -70,7 +70,7 @@ public final class MarketPlugin extends PluginCore {
         shopUpdateQueue.run();
         shopBanQueue.run();
 
-        mysqlBootstrap.closeForkJoinPool();
         mySQLRequester.close();
+        mysqlBootstrap.closeForkJoinPool();
     }
 }

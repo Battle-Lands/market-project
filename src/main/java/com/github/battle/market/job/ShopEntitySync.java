@@ -5,8 +5,6 @@ import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.shop.PlayerShopEntityAdapter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,15 +32,10 @@ public final class ShopEntitySync extends Thread {
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(getAllShopInformation)) {
                 while (resultSet.next()) {
-                    final String owner = resultSet.getString("owner");
-
-                    final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(owner);
-                    if (!offlinePlayer.hasPlayedBefore()) continue;
-
                     final Optional<ShopEntity> optional = entityAdapter.adaptModel(resultSet);
                     if (!optional.isPresent()) continue;
 
-                    preLoadingCache.put(owner, optional);
+                    preLoadingCache.put(optional.get().getOwner(), optional);
                 }
             }
         } catch (SQLException exception) {
