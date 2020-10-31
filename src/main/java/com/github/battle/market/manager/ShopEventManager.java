@@ -32,7 +32,7 @@ public final class ShopEventManager {
         event.setNewValue(location);
 
         shopEntity.setLocation(location);
-        return addToQueue(event.callEvent());
+        return addToEventQueue(event.callEvent());
     }
 
     public ShopEvent setDescription(@NonNull ShopEntity shopEntity, @NonNull Player player, String description) {
@@ -44,14 +44,14 @@ public final class ShopEventManager {
         event.setNewValue(description);
 
         shopEntity.setDescription(description);
-        return addToQueue(event.callEvent());
+        return addToEventQueue(event.callEvent());
     }
 
     public ShopEvent proceduralCheckShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
         final ShopUpdateEvent shopEvent = new ShopCreatedEvent(shopEntity, player);
 
         changeStatus(shopEntity, shopEvent, ShopState.ACCESSIBLE);
-        return addToQueue(shopEvent.callEvent());
+        return addToEventQueue(shopEvent.callEvent());
     }
 
     public ShopEvent invalidateShop(@NonNull ShopEntity shopEntity, @NonNull Player player) {
@@ -59,7 +59,7 @@ public final class ShopEventManager {
         clearAllShopInfo(shopEntity);
 
         changeStatus(shopEntity, shopEvent, ShopState.REMOVED);
-        return addToQueue(shopEvent.callEvent());
+        return addToEventQueue(shopEvent.callEvent());
     }
 
     public void clearAllShopInfo(@NonNull ShopEntity shopEntity) {
@@ -74,10 +74,8 @@ public final class ShopEventManager {
         shopEvent.setReason(reason);
         changeStatus(shopEntity, shopEvent, ShopState.BANNED);
 
-        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToQueue(shopEvent.callEvent());
-        shopBanManager.addShopBan(shopBanEvent.getShopBanEntity());
-
-        return shopBanEvent;
+        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToEventQueue(shopEvent.callEvent());
+        return addToBanQueue(shopBanEvent);
     }
 
     public ShopBanEvent unbanShop(@NonNull ShopEntity shopEntity, @NonNull Player player, @NonNull String reason) {
@@ -86,10 +84,8 @@ public final class ShopEventManager {
         shopEvent.setReason(reason);
         changeStatus(shopEntity, shopEvent, ShopState.ACCESSIBLE);
 
-        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToQueue(shopEvent.callEvent());
-        shopBanManager.addShopBan(shopBanEvent.getShopBanEntity());
-
-        return shopBanEvent;
+        final ShopBanEvent shopBanEvent = (ShopBanEvent) addToEventQueue(shopEvent.callEvent());
+        return addToBanQueue(shopBanEvent);
     }
 
     private void changeStatus(@NonNull ShopEntity shopEntity, @NonNull ShopUpdateEvent shopEvent, @NonNull ShopState state) {
@@ -98,8 +94,13 @@ public final class ShopEventManager {
         shopEntity.setState(state);
     }
 
-    public ShopEvent addToQueue(@NonNull ShopEvent shopEvent) {
-        shopUpdateQueue.addUpdateToQueue((ShopUpdateEvent) shopEvent);
-        return shopEvent;
+    public ShopEvent addToEventQueue(@NonNull ShopEvent event) {
+        shopUpdateQueue.addUpdateToQueue((ShopUpdateEvent) event);
+        return event;
+    }
+
+    public ShopBanEvent addToBanQueue(@NonNull ShopBanEvent event) {
+        shopBanManager.addShopBan(event.getShopBanEntity());
+        return event;
     }
 }
