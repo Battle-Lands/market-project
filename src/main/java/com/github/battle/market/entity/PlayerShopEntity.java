@@ -22,7 +22,6 @@ public final class PlayerShopEntity implements ShopEntity {
     private ShopState state;
     private String description;
     private Location location;
-    private OfflinePlayer offlinePlayer;
 
     private long buyAmount;
     private long sellAmount;
@@ -39,9 +38,7 @@ public final class PlayerShopEntity implements ShopEntity {
 
     @Override
     public OfflinePlayer getPlayer() {
-        return offlinePlayer != null
-          ? offlinePlayer
-          : (offlinePlayer = PluginCore.getOfflinePlayer(owner));
+        return PluginCore.getOfflinePlayer(owner);
     }
 
     @Override

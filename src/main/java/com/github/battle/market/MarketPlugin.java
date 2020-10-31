@@ -57,7 +57,11 @@ public final class MarketPlugin extends PluginCore {
         final ShopBanManager shopBanManager = new ShopBanManager(shopBanQueue, playerShopManager);
         final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue, shopBanManager);
 
-        registerListeners(new PlayerShopEntityListener(shopBanManager), new ChestShopActionListener());
+        registerListeners(
+          new PlayerShopEntityListener(shopBanManager),
+          new ChestShopActionListener(playerShopManager)
+        );
+
         registerListenerFromInventory(this);
         registerCommands(new ShopCommand(
           playerShopManager,

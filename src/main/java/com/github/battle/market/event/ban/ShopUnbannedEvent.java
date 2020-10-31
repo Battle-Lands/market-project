@@ -1,7 +1,7 @@
-package com.github.battle.market.event.update;
+package com.github.battle.market.event.ban;
 
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.event.ShopBanEvent;
+import com.github.battle.market.event.update.UpdateType;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 

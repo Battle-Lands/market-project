@@ -3,7 +3,7 @@ package com.github.battle.market.serializator;
 import com.github.battle.core.serialization.ModelSerializer;
 import com.github.battle.core.serialization.location.text.LocationText;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.event.ShopUpdateEvent;
+import com.github.battle.market.event.update.ShopUpdateEvent;
 import com.github.battle.market.event.update.UpdateType;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import lombok.NonNull;

@@ -1,5 +1,6 @@
 package com.github.battle.market.expansion.param;
 
+import com.github.battle.core.util.format.money.MoneyFormat;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.expansion.ShopExpansionParam;
 import com.github.battle.market.manager.PlayerShopManager;
@@ -15,8 +16,10 @@ public final class ShopTransactionParam extends ShopExpansionParam {
     @Override
     protected String onRequest(OfflinePlayer player, @NonNull String params) {
         final ShopEntity shopEntity = getPlayerShop(player);
-        if(params.endsWith("_formatted")) {
-            return null;
+        if (shopEntity == null) return null;
+
+        if (params.endsWith("_formatted")) {
+            return MoneyFormat.format(shopEntity.getTotalAmount());
         }
 
         return String.valueOf(

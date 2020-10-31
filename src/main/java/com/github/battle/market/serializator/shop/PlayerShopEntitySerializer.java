@@ -20,20 +20,20 @@ public final class PlayerShopEntitySerializer implements ModelSerializer<ShopEnt
 
         final String rawLocation = serializeLocation(playerShopEntity.getLocation());
         final String description = playerShopEntity.getDescription();
-        final String ownerLower = playerShopEntity.getOwner().toLowerCase();
+        final String owner = playerShopEntity.getOwner();
 
         final int updateResult = bootstrap.executeUpdate(
           "shop_information.update",
           rawLocation,
           description,
           ShopState.getStateName(playerShopEntity.getState()),
-          ownerLower
+          owner
         );
 
         if (updateResult == 0) {
             bootstrap.executeUpdate(
               "shop_information.insert",
-              ownerLower,
+              owner,
               rawLocation,
               description
             );

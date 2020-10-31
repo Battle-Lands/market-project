@@ -2,9 +2,13 @@ package com.github.battle.market.manager;
 
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.entity.ShopState;
-import com.github.battle.market.event.ShopBanEvent;
+import com.github.battle.market.event.ban.ShopBanEvent;
 import com.github.battle.market.event.ShopEvent;
-import com.github.battle.market.event.ShopUpdateEvent;
+import com.github.battle.market.event.update.ShopUpdateEvent;
+import com.github.battle.market.event.ban.ShopBannedEvent;
+import com.github.battle.market.event.ban.ShopUnbannedEvent;
+import com.github.battle.market.event.state.ShopCreatedEvent;
+import com.github.battle.market.event.state.ShopRemovedEvent;
 import com.github.battle.market.event.update.*;
 import com.github.battle.market.job.ShopUpdateQueue;
 import lombok.NonNull;

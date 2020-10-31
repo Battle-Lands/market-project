@@ -57,7 +57,7 @@ public final class PlayerShopManager {
     public void updatePlayerShop(OfflinePlayer player, @NonNull ShopEntity shopEntity) {
         if (!checkPlayerCondition(player)) return;
         playerShopCache.put(
-          getName(player),
+          player.getName(),
           shopEntity.optional()
         );
     }
@@ -68,7 +68,7 @@ public final class PlayerShopManager {
 
         playerShopEntitySerializer.serializeModel(shopEntity);
         if (shopEntity.isCreated()) {
-            playerShopCache.refresh(getName(player));
+            playerShopCache.refresh(player.getName());
         }
 
         return getPlayerShop(player);
@@ -78,7 +78,7 @@ public final class PlayerShopManager {
         if (!checkPlayerCondition(player)) return null;
         return PlayerShopEntity
           .builder()
-          .owner(getName(player))
+          .owner(player.getName())
           .created(true)
           .build();
     }
@@ -103,7 +103,7 @@ public final class PlayerShopManager {
     public ShopEntity getPlayerShop(OfflinePlayer player) {
         if (!checkPlayerCondition(player)) return null;
 
-        final Optional<ShopEntity> unchecked = playerShopCache.getUnchecked(getName(player));
+        final Optional<ShopEntity> unchecked = playerShopCache.getUnchecked(player.getName());
         if (!unchecked.isPresent()) return null;
 
         return unchecked.get();
@@ -138,10 +138,6 @@ public final class PlayerShopManager {
 
     public Map<String, Optional<ShopEntity>> asShopMap() {
         return playerShopCache.asMap();
-    }
-
-    public String getName(OfflinePlayer player) {
-        return player.getName().toLowerCase();
     }
 
     public void travelPlayerShop(@NonNull Player player, @NonNull ShopEntity shopEntity) throws ShopTravelException {

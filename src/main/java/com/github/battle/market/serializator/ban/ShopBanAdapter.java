@@ -14,13 +14,13 @@ public final class ShopBanAdapter implements ModelAdapter<ShopBanEntity, ResultS
     public ShopBanEntity adaptModel(ResultSet resultSet) throws SQLException {
         if (resultSet == null) return null;
 
-        final String rawStaffName = resultSet.getString("staff").toLowerCase();
+        final String rawStaffName = resultSet.getString("staff");
         final String rawType = resultSet.getString("type");
 
         return ShopBanEntity.builder()
           .punishmentId(resultSet.getInt("id"))
           .shopId(resultSet.getInt("shop_id"))
-          .staff(PluginCore.getOfflinePlayer(rawStaffName))
+          .staffName(rawStaffName)
           .reason(resultSet.getString("reason"))
           .type(UpdateType.getUpdateTypeByName(rawType))
           .build();

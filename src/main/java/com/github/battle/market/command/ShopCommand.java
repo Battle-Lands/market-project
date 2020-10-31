@@ -1,5 +1,6 @@
 package com.github.battle.market.command;
 
+import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.core.serialization.location.text.LocationText;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.entity.ShopState;
@@ -31,25 +32,31 @@ public final class ShopCommand {
       aliases = "loja",
       target = CommandTarget.PLAYER
     )
-    public void shopViewCommand(Context<Player> playerContext, @Optional OfflinePlayer offlinePlayer) {
+    public void shopViewCommand(Context<Player> playerContext, @Optional String rawOfflinePlayer) {
         final Player sender = playerContext.getSender();
-        if (offlinePlayer != null) {
-            try {
-                travelShopCommand(sender, offlinePlayer);
-            } catch (ShopTravelException exception) {
-                playerContext.sendMessage(
-                  "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
-                  exception.getClass().getSimpleName(),
-                  exception.getCause()
-                );
+        if (rawOfflinePlayer == null) {
+            final boolean hasInventoryIndex = shopPaginatedView.showInventory(sender);
+            if (!hasInventoryIndex) {
+                playerContext.sendMessage("§cNo shop has been set on server.");
+                return;
             }
             return;
         }
 
-        final boolean hasInventoryIndex = shopPaginatedView.showInventory(sender);
-        if (!hasInventoryIndex) {
-            playerContext.sendMessage("§cNo shop has been set on server.");
+        final OfflinePlayer offlinePlayer = PluginCore.getOfflinePlayer(rawOfflinePlayer);
+        if (offlinePlayer == null) {
+            playerContext.sendMessage("§cThis player doesn't exists.");
             return;
+        }
+
+        try {
+            travelShopCommand(sender, offlinePlayer);
+        } catch (ShopTravelException exception) {
+            playerContext.sendMessage(
+              "§cAn error occurred, please inform the owner. \n §r- §cCaused by §8(%s) \n §r%s ",
+              exception.getClass().getSimpleName(),
+              exception.getCause()
+            );
         }
     }
 
@@ -148,8 +155,13 @@ public final class ShopCommand {
       name = "shop.ban",
       permission = "battlelands.shop.ban"
     )
-    public void banShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String[] args) {
-        final String reason = String.join(" ", args);
+    public void banShopCommand(Context<Player> playerContext, String rawOfflinePlayer, String[] args) {
+        final OfflinePlayer offlinePlayer = PluginCore.getOfflinePlayer(rawOfflinePlayer);
+        if(offlinePlayer == null) {
+            playerContext.sendMessage("§cThis player doesn't exists.");
+            return;
+        }
+
         final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
         if (shopEntity == null) {
             playerContext.sendMessage("§cThat player don't have any shop set.");
@@ -161,6 +173,7 @@ public final class ShopCommand {
             return;
         }
 
+        final String reason = String.join(" ", args);
         shopEventManager.banShop(shopEntity, playerContext.getSender(), reason);
         playerShopManager.refreshPlayerShop(offlinePlayer);
 
@@ -175,8 +188,13 @@ public final class ShopCommand {
       name = "shop.unban",
       permission = "battlelands.shop.ban"
     )
-    public void unbanShopCommand(Context<Player> playerContext, OfflinePlayer offlinePlayer, String[] args) {
-        final String reason = String.join(" ", args);
+    public void unbanShopCommand(Context<Player> playerContext, String rawOfflinePlayer, String[] args) {
+        final OfflinePlayer offlinePlayer = PluginCore.getOfflinePlayer(rawOfflinePlayer);
+        if(offlinePlayer == null) {
+            playerContext.sendMessage("§cThis player doesn't exists.");
+            return;
+        }
+
         final ShopEntity shopEntity = playerShopManager.getPlayerShop(offlinePlayer);
         if (shopEntity == null) {
             playerContext.sendMessage("§cThat player don't have any shop set.");
@@ -188,6 +206,7 @@ public final class ShopCommand {
             return;
         }
 
+        final String reason = String.join(" ", args);
         shopEventManager.unbanShop(shopEntity, playerContext.getSender(), reason);
         playerShopManager.refreshPlayerShop(offlinePlayer);
 

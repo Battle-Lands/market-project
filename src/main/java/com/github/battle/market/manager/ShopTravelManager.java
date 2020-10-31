@@ -3,16 +3,13 @@ package com.github.battle.market.manager;
 import com.github.battle.core.builder.Cuboid;
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.exception.ShopTravelException;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor

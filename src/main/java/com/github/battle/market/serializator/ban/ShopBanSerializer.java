@@ -17,7 +17,7 @@ public final class ShopBanSerializer implements ModelSerializer<ShopBanEntity> {
         bootstrap.executeUpdate(
           "shop_ban.insert",
           entity.getShopId(),
-          entity.getStaff().getName().toLowerCase(),
+          entity.getStaffName(),
           entity.getReason(),
           entity.getType().name()
         );

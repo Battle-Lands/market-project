@@ -1,6 +1,7 @@
-package com.github.battle.market.event;
+package com.github.battle.market.event.update;
 
 import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.event.ShopEvent;
 import com.github.battle.market.event.update.UpdateType;
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.sql.Timestamp;
 
 @Getter
-@ToString
 public abstract class ShopUpdateEvent<T> extends ShopEvent {
 
     private final Timestamp timestamp;

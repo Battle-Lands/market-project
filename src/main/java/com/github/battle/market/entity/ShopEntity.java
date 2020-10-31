@@ -3,7 +3,6 @@ package com.github.battle.market.entity;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Optional;
 

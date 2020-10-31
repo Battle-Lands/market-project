@@ -18,12 +18,15 @@ public final class PlayerShopEntityAdapter implements ModelAdapter<Optional<Shop
     public Optional<ShopEntity> adaptModel(@Nullable ResultSet set) throws SQLException {
         if (set == null) return Optional.empty();
 
+        final String owner = set.getString("owner");
+        if(owner == null) return Optional.empty();
+
         final String rawLocation = set.getString("location");
         final String rawState = set.getString("state");
 
         return PlayerShopEntity.builder()
           .id(set.getInt("id"))
-          .owner(set.getString("owner").toLowerCase())
+          .owner(owner)
           .location(adaptLocation(rawLocation))
           .description(set.getString("description"))
           .createdAt(set.getTimestamp("created_at"))
