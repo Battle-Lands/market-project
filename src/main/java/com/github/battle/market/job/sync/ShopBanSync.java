@@ -1,7 +1,7 @@
-package com.github.battle.market.job;
+package com.github.battle.market.job.sync;
 
 import com.github.battle.core.database.requester.MySQLRequester;
-import com.github.battle.market.entity.ShopBanEntity;
+import com.github.battle.market.entity.ban.ShopBanEntity;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.ban.ShopBanAdapter;
 import lombok.NonNull;

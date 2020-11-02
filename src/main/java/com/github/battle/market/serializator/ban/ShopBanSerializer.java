@@ -1,7 +1,7 @@
 package com.github.battle.market.serializator.ban;
 
 import com.github.battle.core.serialization.ModelSerializer;
-import com.github.battle.market.entity.ShopBanEntity;
+import com.github.battle.market.entity.ban.ShopBanEntity;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import lombok.RequiredArgsConstructor;
 

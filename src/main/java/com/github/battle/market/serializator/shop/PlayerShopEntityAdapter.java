@@ -2,9 +2,9 @@ package com.github.battle.market.serializator.shop;
 
 import com.github.battle.core.serialization.ModelAdapter;
 import com.github.battle.core.serialization.location.text.LocationText;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.entity.ShopState;
+import com.github.battle.market.entity.shop.PlayerShopEntity;
+import com.github.battle.market.entity.shop.ShopState;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 

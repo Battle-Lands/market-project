@@ -1,4 +1,4 @@
-package com.github.battle.market.entity;
+package com.github.battle.market.entity.shop;
 
 import lombok.Getter;
 import lombok.NonNull;

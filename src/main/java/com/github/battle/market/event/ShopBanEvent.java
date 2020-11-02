@@ -1,9 +1,8 @@
-package com.github.battle.market.event.ban;
+package com.github.battle.market.event;
 
-import com.github.battle.market.entity.ShopBanEntity;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.entity.ShopState;
-import com.github.battle.market.event.update.ShopUpdateEvent;
+import com.github.battle.market.entity.ban.ShopBanEntity;
+import com.github.battle.market.entity.shop.ShopState;
 import com.github.battle.market.event.update.UpdateType;
 import lombok.Getter;
 import lombok.NonNull;

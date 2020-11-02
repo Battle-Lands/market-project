@@ -3,7 +3,7 @@ package com.github.battle.market.command;
 import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.core.serialization.location.text.LocationText;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.entity.ShopState;
+import com.github.battle.market.entity.shop.ShopState;
 import com.github.battle.market.exception.ShopTravelException;
 import com.github.battle.market.manager.PlayerShopManager;
 import com.github.battle.market.manager.ShopEventManager;
@@ -157,7 +157,7 @@ public final class ShopCommand {
     )
     public void banShopCommand(Context<Player> playerContext, String rawOfflinePlayer, String[] args) {
         final OfflinePlayer offlinePlayer = PluginCore.getOfflinePlayer(rawOfflinePlayer);
-        if(offlinePlayer == null) {
+        if (offlinePlayer == null) {
             playerContext.sendMessage("§cThis player doesn't exists.");
             return;
         }
@@ -190,7 +190,7 @@ public final class ShopCommand {
     )
     public void unbanShopCommand(Context<Player> playerContext, String rawOfflinePlayer, String[] args) {
         final OfflinePlayer offlinePlayer = PluginCore.getOfflinePlayer(rawOfflinePlayer);
-        if(offlinePlayer == null) {
+        if (offlinePlayer == null) {
             playerContext.sendMessage("§cThis player doesn't exists.");
             return;
         }

@@ -4,8 +4,9 @@ import com.github.battle.core.database.requester.MySQLRequester;
 import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.market.command.ShopCommand;
 import com.github.battle.market.expansion.ShopExpansion;
-import com.github.battle.market.job.ShopBanQueue;
-import com.github.battle.market.job.ShopUpdateQueue;
+import com.github.battle.market.job.queue.ShopBanQueue;
+import com.github.battle.market.job.queue.ShopTransactionQueue;
+import com.github.battle.market.job.queue.ShopUpdateQueue;
 import com.github.battle.market.listener.ChestShopActionListener;
 import com.github.battle.market.listener.PlayerShopEntityListener;
 import com.github.battle.market.manager.PlayerShopManager;
@@ -19,6 +20,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public final class MarketPlugin extends PluginCore {
 
+    private ShopTransactionQueue transactionQueue;
     private ShopUpdateQueue shopUpdateQueue;
     private ShopBanQueue shopBanQueue;
 
@@ -53,13 +55,18 @@ public final class MarketPlugin extends PluginCore {
 
         this.shopUpdateQueue = new ShopUpdateQueue(this, mysqlBootstrap);
         this.shopBanQueue = new ShopBanQueue(this, mysqlBootstrap);
+        this.transactionQueue = new ShopTransactionQueue(this, mysqlBootstrap);
 
         final ShopBanManager shopBanManager = new ShopBanManager(shopBanQueue, playerShopManager);
-        final ShopEventManager shopEventManager = new ShopEventManager(shopUpdateQueue, shopBanManager);
+        final ShopEventManager shopEventManager = new ShopEventManager(
+          transactionQueue,
+          shopUpdateQueue,
+          shopBanManager
+        );
 
         registerListeners(
           new PlayerShopEntityListener(shopBanManager),
-          new ChestShopActionListener(playerShopManager)
+          new ChestShopActionListener(playerShopManager, shopEventManager)
         );
 
         registerListenerFromInventory(this);
@@ -74,6 +81,7 @@ public final class MarketPlugin extends PluginCore {
     public void onPluginDisable() {
         shopUpdateQueue.run();
         shopBanQueue.run();
+        transactionQueue.run();
 
         mySQLRequester.close();
         mysqlBootstrap.closeForkJoinPool();

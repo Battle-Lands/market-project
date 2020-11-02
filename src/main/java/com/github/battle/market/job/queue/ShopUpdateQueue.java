@@ -1,6 +1,6 @@
-package com.github.battle.market.job;
+package com.github.battle.market.job.queue;
 
-import com.github.battle.market.event.update.ShopUpdateEvent;
+import com.github.battle.market.event.ShopUpdateEvent;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.ShopUpdateSerializer;
 import lombok.NonNull;
@@ -19,7 +19,7 @@ public final class ShopUpdateQueue extends BukkitRunnable {
         this.shopUpdateEventQueue = new ConcurrentLinkedQueue<>();
         this.shopUpdateSerializer = new ShopUpdateSerializer(bootstrap);
 
-        runTaskTimerAsynchronously(plugin, 0, 20 * 60 * 30);
+        runTaskTimerAsynchronously(plugin, 0, MysqlBootstrap.QUEUE_TIME_MILLIS);
     }
 
     @Override

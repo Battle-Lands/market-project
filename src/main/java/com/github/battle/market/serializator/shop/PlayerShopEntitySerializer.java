@@ -3,7 +3,7 @@ package com.github.battle.market.serializator.shop;
 import com.github.battle.core.serialization.ModelSerializer;
 import com.github.battle.core.serialization.location.text.LocationText;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.entity.ShopState;
+import com.github.battle.market.entity.shop.ShopState;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;

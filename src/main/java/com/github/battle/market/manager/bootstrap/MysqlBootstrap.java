@@ -13,6 +13,8 @@ import java.util.concurrent.ForkJoinPool;
 @RequiredArgsConstructor
 public final class MysqlBootstrap {
 
+    public final static int QUEUE_TIME_MILLIS = 20 * 60 * 30;
+
     private final ForkJoinPool forkJoinPool;
     private final MySQLRequester requester;
     private final SQLReader reader;

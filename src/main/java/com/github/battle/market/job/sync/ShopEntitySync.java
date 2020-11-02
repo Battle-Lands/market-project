@@ -1,4 +1,4 @@
-package com.github.battle.market.job;
+package com.github.battle.market.job.sync;
 
 import com.github.battle.market.entity.ShopEntity;
 import com.github.battle.market.manager.PlayerShopManager;

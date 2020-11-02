@@ -1,9 +1,9 @@
 package com.github.battle.market.manager;
 
-import com.github.battle.market.entity.ShopBanEntity;
 import com.github.battle.market.entity.ShopEntity;
-import com.github.battle.market.job.ShopBanQueue;
-import com.github.battle.market.job.ShopBanSync;
+import com.github.battle.market.entity.ban.ShopBanEntity;
+import com.github.battle.market.job.queue.ShopBanQueue;
+import com.github.battle.market.job.sync.ShopBanSync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.ban.ShopBanAdapter;
 import lombok.Data;

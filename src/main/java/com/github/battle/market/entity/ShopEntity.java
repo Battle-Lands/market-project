@@ -1,5 +1,6 @@
 package com.github.battle.market.entity;
 
+import com.github.battle.market.entity.shop.ShopState;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 

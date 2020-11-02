@@ -1,6 +1,7 @@
 package com.github.battle.market.event.update;
 
 import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.event.ShopUpdateEvent;
 import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

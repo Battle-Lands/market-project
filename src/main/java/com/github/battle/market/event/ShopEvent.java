@@ -8,11 +8,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.sql.Timestamp;
+
 @Getter
 @RequiredArgsConstructor
 public abstract class ShopEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+
+    private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
     private final ShopEntity shopEntity;
     private final Player player;
 

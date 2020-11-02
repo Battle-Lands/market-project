@@ -1,10 +1,10 @@
 package com.github.battle.market.manager;
 
 import com.github.battle.market.cache.PlayerShopCacheLoader;
-import com.github.battle.market.entity.PlayerShopEntity;
 import com.github.battle.market.entity.ShopEntity;
+import com.github.battle.market.entity.shop.PlayerShopEntity;
 import com.github.battle.market.exception.ShopTravelException;
-import com.github.battle.market.job.ShopEntitySync;
+import com.github.battle.market.job.sync.ShopEntitySync;
 import com.github.battle.market.manager.bootstrap.MysqlBootstrap;
 import com.github.battle.market.serializator.shop.PlayerShopEntityAdapter;
 import com.github.battle.market.serializator.shop.PlayerShopEntitySerializer;

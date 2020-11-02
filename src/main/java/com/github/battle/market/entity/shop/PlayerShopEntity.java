@@ -1,6 +1,7 @@
-package com.github.battle.market.entity;
+package com.github.battle.market.entity.shop;
 
 import com.github.battle.core.plugin.PluginCore;
+import com.github.battle.market.entity.ShopEntity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;

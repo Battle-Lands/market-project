@@ -1,8 +1,7 @@
 package com.github.battle.market.serializator.ban;
 
-import com.github.battle.core.plugin.PluginCore;
 import com.github.battle.core.serialization.ModelAdapter;
-import com.github.battle.market.entity.ShopBanEntity;
+import com.github.battle.market.entity.ban.ShopBanEntity;
 import com.github.battle.market.event.update.UpdateType;
 
 import java.sql.ResultSet;
